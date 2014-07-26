@@ -48,7 +48,6 @@ var Missile = function(_position,_heading,_velocity){
 		},
 
 		update: function(){
-
 			var historyLength = this.history.push({
 				x: this.position.x,
 				y: this.position.y
@@ -65,8 +64,7 @@ var Missile = function(_position,_heading,_velocity){
 
 			this.velocity += 0.09;
 			if (this.velocity>8) this.velocity = 8;
-
-			if (this.history[history.length-1].x<0 || this.history[history.length-1].x>canvas.width || this.history[history.length-1].y<0 || this.history[history.length-1].y>canvas.height ){
+			if (this.history[0].x<0 || this.history[0].x>canvas.width || this.history[0].y<0 || this.history[0].y>canvas.height ){
 				this.active = false;
 			}
 			
