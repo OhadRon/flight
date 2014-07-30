@@ -111,17 +111,17 @@ var Airplane = function(_x,_y){
 			ctx.lineTo(0,0);
 			ctx.fill();
 
-			// envelope
-			ctx.save();
-			ctx.translate(0,-25);
-			ctx.fillStyle="rgba(0,0,0,0.2)";
-			ctx.beginPath();
-			ctx.moveTo(0,0);
-			ctx.lineTo(20,-85);
-			ctx.lineTo(-20,-85);
-			ctx.lineTo(0,0);
-			ctx.fill();
-			ctx.restore();
+			// // envelope
+			// ctx.save();
+			// ctx.translate(0,-25);
+			// ctx.fillStyle="rgba(0,0,0,0.2)";
+			// ctx.beginPath();
+			// ctx.moveTo(0,0);
+			// ctx.lineTo(20,-85);
+			// ctx.lineTo(-20,-85);
+			// ctx.lineTo(0,0);
+			// ctx.fill();
+			// ctx.restore();
 
 			ctx.restore();
 
