@@ -147,15 +147,15 @@ Airplane.prototype.draw = function(context){
 	context.lineTo(-10,0);
 	context.lineTo(0,0);
 	context.fill();
-
-	for (var i = this.missiles.length - 1; i >= 0; i--) {
-		this.missiles[i].display(context);
-	};
 }
 
 Airplane.prototype.display = function(context){
 	GameEntity.prototype.display.call(this, context);
 	Airplane.prototype.drawTrails.call(this, context);
+
+	for (var i = this.missiles.length - 1; i >= 0; i--) {
+		this.missiles[i].display(context);
+	};
 }
 
 Airplane.prototype.update = function(){
@@ -184,7 +184,7 @@ Airplane.prototype.update = function(){
 
 	} else {
 		this.velocity += 0.05;
-		if (this.velocity>2) this.velocity = 2;
+		if (this.velocity>4) this.velocity = 4;
 	}
 
 	if (keys[32]){
@@ -202,11 +202,13 @@ Airplane.prototype.update = function(){
 
 Airplane.prototype.fireMissile = function(){
 	if (clock-this.lastMissileTime>30){
+
 		this.missiles.push(new Missile({
-			position: this.position,
+			position: clone(this.position),
 			heading: this.heading, 
 			velocity: this.velocity
 		}));
+
 		this.lastMissileTime = clock;
 	}	
 }
