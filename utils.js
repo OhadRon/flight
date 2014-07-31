@@ -16,7 +16,7 @@ function clone(obj) {
 }
 
 function clearScreen(){
-	ctx.fillStyle="#ffffff"
+	ctx.fillStyle="#dcf3ff"
 	ctx.fillRect(0,0,canvas.width, canvas.height);
 }
 

@@ -31,7 +31,7 @@ var entities = [];
 
 entities.push(new Airplane({
 	position: {
-		x: 400,
+		x: 800,
 		y: 600
 	}, 
 	id: 0,
@@ -44,7 +44,7 @@ entities.push(new Airplane({
 
 entities.push(new Airplane({
 	position: {
-		x: 800,
+		x: 400,
 		y: 600
 	}, 
 	id: 1,

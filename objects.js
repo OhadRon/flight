@@ -121,6 +121,12 @@ Missile.prototype.update = function(){
 				this.hit = true;
 			}
 		}
+		if (entity instanceof Airplane){
+			if (entity.id != this.owner && distance(this, entity)<10){
+				entity.alive = false;
+				this.hit = true;
+			}
+		}
 	}, this);
 
 	if (this.hit){
@@ -144,6 +150,7 @@ function Airplane(options){
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
 	this.controls = options.controls;
+	this.alive = true;
 	this.trailColors = ['#38a8a7','#c52d2e', '#5d1584', '#177411'];
 }
 
@@ -188,25 +195,29 @@ Airplane.prototype.update = function(){
 		this.history.shift();
 	}
 
-	if (keys[this.controls.left]) {
-		this.heading -= 1.9*(this.velocity/4);
-	}
+	if (this.alive){
+		if (keys[this.controls.left]) {
+			this.heading -= 2.8*(this.velocity/4);
+		}
 
-	if (keys[this.controls.right]) {
-		this.heading += 1.9*(this.velocity/4);
-	}
+		if (keys[this.controls.right]) {
+			this.heading += 2.8*(this.velocity/4);
+		}
 
-	if (keys[this.controls.right] || keys[this.controls.left]){
-		this.velocity -= 0.02;
-		if (this.velocity<1) this.velocity = 1;
+		if (keys[this.controls.right] || keys[this.controls.left]){
+			this.velocity -= 0.02;
+			if (this.velocity<2) this.velocity = 2;
+		} else {
+			this.velocity += 0.05;
+			if (this.velocity>4) this.velocity = 4;
+		}
 
+		if (keys[this.controls.fire]){
+			this.fireMissile();
+		}		
 	} else {
-		this.velocity += 0.05;
-		if (this.velocity>4) this.velocity = 4;
-	}
-
-	if (keys[this.controls.fire]){
-		this.fireMissile();
+		this.velocity -= 0.1;
+		if (this.velocity<0) this.velocity = 0;
 	}
 }
 
