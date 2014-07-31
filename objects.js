@@ -202,19 +202,19 @@ Airplane.prototype.update = function(){
 
 	if (this.alive){
 		if (keys[this.controls.left]) {
-			this.heading -= 2.8*(this.velocity/4);
+			this.heading -= 4*(this.velocity/4);
 		}
 
 		if (keys[this.controls.right]) {
-			this.heading += 2.8*(this.velocity/4);
+			this.heading += 4*(this.velocity/4);
 		}
 
 		if (keys[this.controls.right] || keys[this.controls.left]){
 			this.velocity -= 0.02;
 			if (this.velocity<2) this.velocity = 2;
 		} else {
-			this.velocity += 0.05;
-			if (this.velocity>4) this.velocity = 4;
+			this.velocity += 0.08;
+			if (this.velocity>4.5) this.velocity = 4.5;
 		}
 
 		if (keys[this.controls.fire]){
