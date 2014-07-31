@@ -9,7 +9,6 @@ GameEntity.prototype = {
 	constructor: GameEntity,
 
 	draw: function(context){
-
 		context.fillStyle="#e5333d";
 		context.beginPath();
 		context.moveTo(0,0);
@@ -19,7 +18,6 @@ GameEntity.prototype = {
 		context.lineTo(0,-5);
 		context.lineTo(0,0);
 		context.fill();
-
 	},
 
 	display: function(context){
@@ -55,7 +53,7 @@ PracticeTarget.prototype.draw = function(context) {
 PracticeTarget.prototype.update = function(context) {
 	GameEntity.prototype.update.call(this, context);
 	if (!this.exploded){
-		this.heading += 0.4;
+		this.heading += 0.7;
 	}
 }
 
@@ -63,7 +61,6 @@ function Missile(options){
 	GameEntity.call(this, options);
 	this.originalHeading = this.heading;
 	this.history = [];
-	this.active = true;
 	this.owner = options.owner || 0;
 	this.hit = false;
 }
@@ -114,7 +111,7 @@ Missile.prototype.update = function(){
 	}
 
 	if (!this.hit){
-		this.heading = Math.sin(clock/3)*7 + this.originalHeading;
+		this.heading = Math.sin(clock/2.5)*10 + this.originalHeading;
 	}
 
 	entities.forEach(function(entity){
