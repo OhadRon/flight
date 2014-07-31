@@ -2,6 +2,7 @@ function GameEntity(options) {
 	this.velocity =  options.velocity || 0;
 	this.position =  options.position || { x: 0, y:0 };
 	this.heading =  options.heading || 0;
+	this.active = true;
 }
 
 GameEntity.prototype = {
@@ -61,6 +62,7 @@ function Missile(options){
 	this.originalHeading = this.heading;
 	this.history = [];
 	this.active = true;
+	this.owner = options.owner || 0;
 }
 
 Missile.prototype = Object.create(GameEntity.prototype);
@@ -123,6 +125,7 @@ function Airplane(options){
 	this.history = [];
 	this.missiles = [];
 	this.lastMissileTime = 0;
+	this.id = options.id || 0;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
@@ -152,10 +155,6 @@ Airplane.prototype.draw = function(context){
 Airplane.prototype.display = function(context){
 	GameEntity.prototype.display.call(this, context);
 	Airplane.prototype.drawTrails.call(this, context);
-
-	for (var i = this.missiles.length - 1; i >= 0; i--) {
-		this.missiles[i].display(context);
-	};
 }
 
 Airplane.prototype.update = function(){
@@ -190,25 +189,16 @@ Airplane.prototype.update = function(){
 	if (keys[32]){
 		this.fireMissile();
 	}
-
-	// update missiles
-	for (var i = this.missiles.length - 1; i >= 0; i--) {
-		this.missiles[i].update();
-		if (!this.missiles[i].active){
-			this.missiles.splice(i,1);
-		}
-	};	
 }
 
 Airplane.prototype.fireMissile = function(){
 	if (clock-this.lastMissileTime>30){
-
-		this.missiles.push(new Missile({
+		entities.push(new Missile({
 			position: clone(this.position),
 			heading: this.heading, 
-			velocity: this.velocity
+			velocity: this.velocity,
+			owner: this.id
 		}));
-
 		this.lastMissileTime = clock;
 	}	
 }

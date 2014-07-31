@@ -15,7 +15,6 @@ function clone(obj) {
     return copy;
 }
 
-
 // Pressed keys list
 
 var keys = [];
@@ -39,18 +38,17 @@ var clock = 0;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-var players = [];
-players.push(new Airplane({
+var entities = [];
+
+entities.push(new Airplane({
 	position: {
 		x: 400,
 		y: 600
 	}
 }));
 
-var targets = [];
-
 for (var i = 0; i < 15; i++) {
-	targets.push(new PracticeTarget({
+	entities.push(new PracticeTarget({
 		position:{
 			x: getRandomInt(0,canvas.width),
 			y: getRandomInt(0,canvas.height)
@@ -63,16 +61,16 @@ function step(timestamp) {
 	ctx.fillStyle="#ffffff"
 	ctx.fillRect(0,0,canvas.width, canvas.height);
 
-	// Iterate through all players
+	// Iterate through all entities
 
-	for (var i = players.length - 1; i >= 0; i--) {
-		players[i].update();
-		players[i].display(ctx);
-	};
+	for (var i = entities.length - 1; i >= 0; i--) {
+		if (!entities[i].active){
+			entities.splice(i,1);
+		} else {
+			entities[i].update();
+			entities[i].display(ctx);			
+		}
 
-	for (var i = targets.length - 1; i >= 0; i--) {
-		targets[i].update();
-		targets[i].display(ctx);
 	};
 
 	clock++;
