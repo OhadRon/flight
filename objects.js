@@ -38,23 +38,25 @@ GameEntity.prototype = {
 
 function PracticeTarget(options){
 	GameEntity.call(this, options);
+	this.exploded = false;
 }
 
 PracticeTarget.prototype = Object.create(GameEntity.prototype);
 PracticeTarget.prototype.constructor = PracticeTarget;
 PracticeTarget.prototype.draw = function(context) {
-	context.fillStyle="#47aabd";
-	context.beginPath();
-	context.moveTo(0,0);
-	context.lineTo(0,10);
-	context.lineTo(10,17);
-	context.lineTo(10,0);
-	context.fill();
+	if (this.exploded){
+		context.fillStyle="#b6a78f";
+	} else {
+		context.fillStyle="#a0bec3";
+	}
+	star(context, 10,5,0.5)
 };
 
 PracticeTarget.prototype.update = function(context) {
 	GameEntity.prototype.update.call(this, context);
-	this.heading += 0.4;
+	if (!this.exploded){
+		this.heading += 0.4;
+	}
 }
 
 function Missile(options){
@@ -63,6 +65,7 @@ function Missile(options){
 	this.history = [];
 	this.active = true;
 	this.owner = options.owner || 0;
+	this.hit = false;
 }
 
 Missile.prototype = Object.create(GameEntity.prototype);
@@ -109,10 +112,27 @@ Missile.prototype.update = function(){
 	if (historyLength>50){
 		this.history.shift();
 	}
-	this.heading = Math.sin(clock/3)*7 + this.originalHeading;
 
-	this.velocity += 0.09;
-	if (this.velocity>8) this.velocity = 8;
+	if (!this.hit){
+		this.heading = Math.sin(clock/3)*7 + this.originalHeading;
+	}
+
+	entities.forEach(function(entity){
+		if (entity instanceof PracticeTarget){
+			if (distance(this, entity)<10){
+				entity.exploded = true;
+				this.hit = true;
+			}
+		}
+	}, this);
+
+	if (this.hit){
+		this.velocity = 0;
+	} else {
+		this.velocity += 0.09;
+		if (this.velocity>8) this.velocity = 8;		
+	}
+
 	if (this.history[0].x<0 || this.history[0].x>canvas.width || this.history[0].y<0 || this.history[0].y>canvas.height ){
 		this.active = false;
 	}
@@ -132,7 +152,7 @@ Airplane.prototype = Object.create(GameEntity.prototype);
 Airplane.prototype.constructor = Airplane;
 
 Airplane.prototype.drawTrails = function(context){
-	context.strokeStyle="#888";
+	context.strokeStyle="#c9c9c9";
 	context.lineWidth=2;
 	context.beginPath();
 	for (var i = this.history.length - 1; i >= 0; i--) {
