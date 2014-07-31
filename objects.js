@@ -144,13 +144,14 @@ function Airplane(options){
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
 	this.controls = options.controls;
+	this.trailColors = ['#38a8a7','#c52d2e', '#5d1584', '#177411'];
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
 Airplane.prototype.constructor = Airplane;
 
 Airplane.prototype.drawTrails = function(context){
-	context.strokeStyle="#c9c9c9";
+	context.strokeStyle=this.trailColors[this.id%4];
 	context.lineWidth=2;
 	context.beginPath();
 	for (var i = this.history.length - 1; i >= 0; i--) {
@@ -197,7 +198,7 @@ Airplane.prototype.update = function(){
 
 	if (keys[this.controls.right] || keys[this.controls.left]){
 		this.velocity -= 0.02;
-		if (this.velocity<0.6) this.velocity = 0.6;
+		if (this.velocity<1) this.velocity = 1;
 
 	} else {
 		this.velocity += 0.05;
