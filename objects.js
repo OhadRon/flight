@@ -112,22 +112,22 @@ Missile.prototype.update = function(){
 
 	if (!this.hit){
 		this.heading = Math.sin(clock/2.5)*10 + this.originalHeading;
-	}
 
-	entities.forEach(function(entity){
-		if (entity instanceof PracticeTarget){
-			if (distance(this, entity)<10){
-				entity.exploded = true;
-				this.hit = true;
+		entities.forEach(function(entity){
+			if (entity instanceof PracticeTarget){
+				if (distance(this, entity)<10){
+					entity.exploded = true;
+					this.hit = true;
+				}
 			}
-		}
-		if (entity instanceof Airplane){
-			if (entity.id != this.owner && distance(this, entity)<10){
-				entity.alive = false;
-				this.hit = true;
+			if (entity instanceof Airplane){
+				if (entity.id != this.owner && distance(this, entity)<10){
+					entity.die();
+					this.hit = true;
+				}
 			}
-		}
-	}, this);
+		}, this);
+	}
 
 	if (this.hit){
 		this.velocity = 0;
@@ -167,6 +167,11 @@ Airplane.prototype.drawTrails = function(context){
 	context.stroke();
 }
 
+Airplane.prototype.die = function(){
+	this.alive = false;
+	this.deathTime = clock;
+}
+
 Airplane.prototype.draw = function(context){
 	context.fillStyle="#555";
 	context.beginPath();
@@ -191,7 +196,7 @@ Airplane.prototype.update = function(){
 		y: this.position.y
 	});
 
-	if (historyLength>250){
+	if (historyLength>160){
 		this.history.shift();
 	}
 
@@ -218,6 +223,7 @@ Airplane.prototype.update = function(){
 	} else {
 		this.velocity -= 0.1;
 		if (this.velocity<0) this.velocity = 0;
+		if (clock > this.deathTime+100) this.alive = true;
 	}
 }
 
