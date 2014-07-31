@@ -1,20 +1,3 @@
-function headingToRadians(degrees){
-	return degrees*Math.PI/180;
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function clone(obj) {
-    if (null == obj || "object" != typeof obj) return obj;
-    var copy = obj.constructor();
-    for (var attr in obj) {
-        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
-    return copy;
-}
-
 // Pressed keys list
 
 var keys = [];
@@ -37,13 +20,13 @@ false);
 var clock = 0;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
-
 var entities = [];
 
 entities.push(new Airplane({
 	position: {
 		x: 400,
-		y: 600
+		y: 600,
+		id: 0
 	}
 }));
 
@@ -57,9 +40,7 @@ for (var i = 0; i < 15; i++) {
 };
 
 function step(timestamp) {
-	// Clear screen
-	ctx.fillStyle="#ffffff"
-	ctx.fillRect(0,0,canvas.width, canvas.height);
+	clearScreen();
 
 	// Iterate through all entities
 
@@ -70,11 +51,9 @@ function step(timestamp) {
 			entities[i].update();
 			entities[i].display(ctx);			
 		}
-
 	};
 
 	clock++;
-
 	requestAnimationFrame(step);
 }
 
