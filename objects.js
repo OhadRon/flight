@@ -143,6 +143,7 @@ function Airplane(options){
 	this.missiles = [];
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
+	this.controls = options.controls;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
@@ -186,15 +187,15 @@ Airplane.prototype.update = function(){
 		this.history.shift();
 	}
 
-	if (keys[37]) {
+	if (keys[this.controls.left]) {
 		this.heading -= 1.9*(this.velocity/4);
 	}
 
-	if (keys[39]) {
+	if (keys[this.controls.right]) {
 		this.heading += 1.9*(this.velocity/4);
 	}
 
-	if (keys[39] || keys[37]){
+	if (keys[this.controls.right] || keys[this.controls.left]){
 		this.velocity -= 0.02;
 		if (this.velocity<0.6) this.velocity = 0.6;
 
@@ -203,7 +204,7 @@ Airplane.prototype.update = function(){
 		if (this.velocity>4) this.velocity = 4;
 	}
 
-	if (keys[32]){
+	if (keys[this.controls.fire]){
 		this.fireMissile();
 	}
 }

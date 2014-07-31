@@ -27,6 +27,24 @@ entities.push(new Airplane({
 		x: 400,
 		y: 600,
 		id: 0
+	}, 
+	controls: {
+		left: 37,
+		right: 39,
+		fire: 38
+	}
+}));
+
+entities.push(new Airplane({
+	position: {
+		x: 800,
+		y: 600,
+		id: 0
+	}, 
+	controls: {
+		left: 65,
+		right: 68,
+		fire: 87
 	}
 }));
 
