@@ -20,6 +20,14 @@ false);
 var clock = 0;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+
+// retina fixes
+
+canvas.width = parseInt(window.getComputedStyle(canvas).width)*window.devicePixelRatio;
+canvas.height = parseInt(window.getComputedStyle(canvas).height)*window.devicePixelRatio;
+
+ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
 var entities = [];
 
 entities.push(new Airplane({
