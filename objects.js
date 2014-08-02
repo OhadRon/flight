@@ -180,7 +180,7 @@ Airplane.prototype.display = function(context){
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
 
-	if (this.particleClock%2==0){
+	if (this.alive && this.particleClock%2==0){
 		entities.push(new Particle({
 			position: clone(this.position),
 			heading: this.heading -180 + getRandomInt(-10,10),
@@ -247,7 +247,7 @@ Particle.prototype.draw = function(context){
 		context.fillStyle= this.color;
 		context.beginPath();
 		context.moveTo(0,0);
-		context.arc(0,0, 2, 0, Math.PI*2, false)
+		context.arc(0,0, this.strength/50+0.1, 0, Math.PI*2, false)
 		context.fill();
 }
 
