@@ -39,7 +39,8 @@ entities.push(new Airplane({
 	controls: {
 		left: 37,
 		right: 39,
-		fire: 38
+		fire: 38,
+		slow: 40
 	}
 }));
 
@@ -53,7 +54,8 @@ entities.push(new Airplane({
 	controls: {
 		left: 65,
 		right: 68,
-		fire: 87
+		fire: 87,
+		slow: 83
 	}
 }));
 

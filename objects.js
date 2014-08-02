@@ -184,6 +184,10 @@ Airplane.prototype.draw = function(context){
 	context.lineTo(-10,0);
 	context.lineTo(0,0);
 	context.fill();
+	this.drawScore(context);
+}
+
+Airplane.prototype.drawScore = function(context){
 	var scoreText = '' + this.score;
 	context.save();
 		context.rotate(headingToRadians(-this.heading));
@@ -227,6 +231,12 @@ Airplane.prototype.update = function(){
 			if (this.velocity>4.5) this.velocity = 4.5;
 		}
 
+		if (keys[this.controls.slow]){
+			if (this.velocity<1) this.velocity = 1;
+				else 
+			this.velocity -= 0.25;
+		}	
+
 		if (keys[this.controls.fire]){
 			this.fireMissile();
 		}		
@@ -242,7 +252,7 @@ Airplane.prototype.fireMissile = function(){
 		entities.push(new Missile({
 			position: clone(this.position),
 			heading: this.heading, 
-			velocity: this.velocity,
+			velocity: this.velocity+2,
 			owner: this
 		}));
 		this.lastMissileTime = clock;
