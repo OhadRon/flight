@@ -1,3 +1,5 @@
+// Game entity abstract object
+
 function GameEntity(options) {
 	this.velocity =  options.velocity || 0;
 	this.position =  options.position || { x: 0, y:0 };
@@ -8,6 +10,7 @@ function GameEntity(options) {
 GameEntity.prototype = {
 	constructor: GameEntity,
 
+	// Default shape
 	draw: function(context){
 		context.fillStyle="#e5333d";
 		context.beginPath();
@@ -20,6 +23,7 @@ GameEntity.prototype = {
 		context.fill();
 	},
 
+	// Default display - wraps draw() with default transformations
 	display: function(context){
 		context.save();
 		context.translate(this.position.x,this.position.y);
@@ -28,11 +32,14 @@ GameEntity.prototype = {
 		context.restore();
 	},
 
+	// Default movement
 	update: function(){
 		this.position.x += this.velocity*Math.cos(headingToRadians(this.heading-90));
 		this.position.y += this.velocity*Math.sin(headingToRadians(this.heading-90));
 	}
 };
+
+// Practice target object.
 
 function PracticeTarget(options){
 	GameEntity.call(this, options);
@@ -53,9 +60,12 @@ PracticeTarget.prototype.draw = function(context) {
 PracticeTarget.prototype.update = function(context) {
 	GameEntity.prototype.update.call(this, context);
 	if (!this.exploded){
+		// Rotate
 		this.heading += 0.7;
 	}
 }
+
+// Missile object
 
 function Missile(options){
 	GameEntity.call(this, options);
@@ -111,9 +121,12 @@ Missile.prototype.update = function(){
 	}
 
 	if (!this.hit){
-		this.heading = Math.sin(clock/2.5)*10 + this.originalHeading;
+		// Sinus movement
+		this.heading = Math.sin(clock/2.5)*7 + this.originalHeading;
 
+		// Check collisions
 		entities.forEach(function(entity){
+			// Missile hitting a practice target 
 			if (entity instanceof PracticeTarget){
 				if (distance(this, entity)<10){
 					entity.exploded = true;
@@ -132,6 +145,7 @@ Missile.prototype.update = function(){
 		}, this);
 	}
 
+	// Engine logic
 	if (this.hit){
 		this.velocity = 0;
 	} else {
@@ -139,6 +153,7 @@ Missile.prototype.update = function(){
 		if (this.velocity>9) this.velocity = 9;		
 	}
 
+	// Kill this missile if it goes out of bounds
 	if (this.history[0].x<0 || this.history[0].x>canvas.width || this.history[0].y<0 || this.history[0].y>canvas.height ){
 		this.active = false;
 	}
@@ -146,31 +161,38 @@ Missile.prototype.update = function(){
 
 function Airplane(options){
 	GameEntity.call(this,options);
-	this.throttle = 0;
-	this.fuel = 100;
+	
 	this.missiles = [];
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
 	this.controls = options.controls;
 	this.alive = true;
 	this.trailColors = ['#38a8a7','#c52d2e', '#5d1584', '#177411'];
-	this.particleClock = 0;
 	this.score = 0;
+
+	// Unused for now:
+	this.throttle = 0;
+	this.fuel = 100;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
 Airplane.prototype.constructor = Airplane;
 
+
+// Death function
 Airplane.prototype.die = function(){
 	this.alive = false;
+	// Mark time of death
 	this.deathTime = clock;
+	// Explosion animation
 	for (var i = 0; i < 10; i++) {
 		entities.push(new Particle({
 			position: clone(this.position),
 			heading: i*36,
 			velocity: 3,
 			color: this.trailColors[this.id],
-			owner: this
+			owner: this,
+			strength: 140
 		}));		
 	};
 }
@@ -195,14 +217,11 @@ Airplane.prototype.drawScore = function(context){
 	context.restore();
 }
 
-Airplane.prototype.display = function(context){
-	GameEntity.prototype.display.call(this, context);
-}
-
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
 
-	if (this.alive && this.particleClock%2==0){
+	// Draw particle trail
+	if (this.alive){
 		entities.push(new Particle({
 			position: clone(this.position),
 			heading: this.heading -180 + getRandomInt(-3,3),
@@ -212,8 +231,6 @@ Airplane.prototype.update = function(){
 			strength: 120
 		}));
 	}
-
-	this.particleClock++;
 
 	if (this.alive){
 		if (keys[this.controls.left]) {
@@ -244,6 +261,8 @@ Airplane.prototype.update = function(){
 	} else {
 		this.velocity -= 0.1;
 		if (this.velocity<0) this.velocity = 0;
+
+		// Respawn after 100 frames
 		if (clock > this.deathTime+100) this.alive = true;
 	}
 }
@@ -260,6 +279,7 @@ Airplane.prototype.fireMissile = function(){
 	}	
 }
 
+// Particle!
 function Particle(options){
 	GameEntity.call(this, options);
 	this.color = options.color || '#000';
@@ -277,6 +297,8 @@ Particle.prototype.draw = function(context){
 		context.moveTo(0,0);
 		var rectSize = this.strength/30+0.2;
 		context.fillRect(-rectSize/2, -rectSize/2, rectSize, rectSize);
+
+		// Circles were too processor intensive to draw
 		// context.arc(0,0, this.strength/50+0.1, 0, Math.PI*2, false)
 		// context.fill();
 }

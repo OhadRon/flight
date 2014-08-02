@@ -1,5 +1,4 @@
 // Pressed keys list
-
 var keys = [];
 
 window.addEventListener("keydown",	
@@ -15,16 +14,15 @@ window.addEventListener('keyup',
 	},
 false);
 
-// Main stuff
+// Setup stuff
 
 var clock = 0;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-// retina fixes
+// Retina fixes
 canvas.width = parseInt(window.getComputedStyle(canvas).width)*window.devicePixelRatio;
 canvas.height = parseInt(window.getComputedStyle(canvas).height)*window.devicePixelRatio;
-
 ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
 var entities = [];
@@ -59,6 +57,7 @@ entities.push(new Airplane({
 	}
 }));
 
+// Practice targets setup
 for (var i = 0; i < 0; i++) {
 	entities.push(new PracticeTarget({
 		position:{
@@ -68,12 +67,11 @@ for (var i = 0; i < 0; i++) {
 	}));
 };
 
-
+// Game loop
 function step(timestamp) {
 	clearScreen();
 
 	// Iterate through all entities
-
 	for (var i = entities.length - 1; i >= 0; i--) {
 		if (!entities[i].active){
 			entities.splice(i,1);
