@@ -145,27 +145,17 @@ function Airplane(options){
 	GameEntity.call(this,options);
 	this.throttle = 0;
 	this.fuel = 100;
-	this.history = [];
 	this.missiles = [];
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
 	this.controls = options.controls;
 	this.alive = true;
 	this.trailColors = ['#38a8a7','#c52d2e', '#5d1584', '#177411'];
+	this.particleClock = 0;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
 Airplane.prototype.constructor = Airplane;
-
-Airplane.prototype.drawTrails = function(context){
-	context.strokeStyle=this.trailColors[this.id%4];
-	context.lineWidth=2;
-	context.beginPath();
-	for (var i = this.history.length - 1; i >= 0; i--) {
-		context.lineTo(this.history[i].x,this.history[i].y);
-	};
-	context.stroke();
-}
 
 Airplane.prototype.die = function(){
 	this.alive = false;
@@ -185,20 +175,22 @@ Airplane.prototype.draw = function(context){
 
 Airplane.prototype.display = function(context){
 	GameEntity.prototype.display.call(this, context);
-	Airplane.prototype.drawTrails.call(this, context);
 }
 
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
 
-	var historyLength = this.history.push({
-		x: this.position.x,
-		y: this.position.y
-	});
-
-	if (historyLength>160){
-		this.history.shift();
+	if (this.particleClock%2==0){
+		entities.push(new Particle({
+			position: clone(this.position),
+			heading: this.heading -180 + getRandomInt(-10,10),
+			velocity: getRandomInt(1,3)*0.5,
+			color: this.trailColors[this.id],
+			owner: this.id
+		}));
 	}
+
+	this.particleClock++;
 
 	if (this.alive){
 		if (keys[this.controls.left]) {
@@ -244,6 +236,8 @@ function Particle(options){
 	this.color = options.color || '#d671c5';
 	this.strength = 100;
 	this.slowRate = 1;
+	this.owner = options.owner || 0;
+
 }
 
 Particle.prototype = Object.create(GameEntity.prototype);
