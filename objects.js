@@ -238,3 +238,33 @@ Airplane.prototype.fireMissile = function(){
 		this.lastMissileTime = clock;
 	}	
 }
+
+function Particle(options){
+	GameEntity.call(this, options);
+	this.color = options.color || '#d671c5';
+	this.strength = 100;
+	this.slowRate = 1;
+}
+
+Particle.prototype = Object.create(GameEntity.prototype);
+Particle.prototype.constructor = Particle;
+
+Particle.prototype.draw = function(context){
+		context.fillStyle= this.color;
+		context.beginPath();
+		context.moveTo(0,0);
+		context.arc(0,0, 2, 0, Math.PI*2, false)
+		context.fill();
+}
+
+Particle.prototype.update = function(){
+	GameEntity.prototype.update.call(this);
+	if (this.strength<0){
+		this.active = false;
+	} else {
+		this.strength -=1;
+		this.velocity -= this.slowRate*0.01;		
+		if (this.velocity<0) this.velocity = 0;
+	}
+
+}
