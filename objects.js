@@ -69,11 +69,11 @@ Missile.prototype = Object.create(GameEntity.prototype);
 Missile.prototype.constructor = Missile;
 
 Missile.prototype.draw = function(context) {
-	context.fillStyle="rgba(100,0,0,0.8)";
+	context.fillStyle="rgba(0,0,0,0.6)";
 	context.beginPath();
 	context.moveTo(0,0);
 	context.lineTo(5,0);
-	context.lineTo(0,-15);
+	context.lineTo(0,-10);
 	context.lineTo(-5,0);
 	context.lineTo(0,0);
 	context.fill();
@@ -81,7 +81,7 @@ Missile.prototype.draw = function(context) {
 
 Missile.prototype.drawTrails = function(context){
 	context.save();
-	context.strokeStyle="#888";
+	context.strokeStyle="rgba(0,0,0,0.6)";
 	context.lineWidth=1;
 	context.setLineDash([5]);
 	context.beginPath();
@@ -121,9 +121,10 @@ Missile.prototype.update = function(){
 				}
 			}
 			if (entity instanceof Airplane){
-				if (entity.id != this.owner && distance(this, entity)<10){
+				if (entity.alive && entity.id != this.owner && distance(this, entity)<10){
 					entity.die();
 					this.hit = true;
+					this.active = false;
 				}
 			}
 		}, this);
@@ -160,6 +161,15 @@ Airplane.prototype.constructor = Airplane;
 Airplane.prototype.die = function(){
 	this.alive = false;
 	this.deathTime = clock;
+	for (var i = 0; i < 10; i++) {
+		entities.push(new Particle({
+			position: clone(this.position),
+			heading: i*36,
+			velocity: 3,
+			color: this.trailColors[this.id],
+			owner: this.id
+		}));		
+	};
 }
 
 Airplane.prototype.draw = function(context){
@@ -180,7 +190,7 @@ Airplane.prototype.display = function(context){
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
 
-	if (this.alive && this.particleClock%2==0){
+	if (this.alive && this.particleClock%3==0){
 		entities.push(new Particle({
 			position: clone(this.position),
 			heading: this.heading -180 + getRandomInt(-10,10),
@@ -233,11 +243,10 @@ Airplane.prototype.fireMissile = function(){
 
 function Particle(options){
 	GameEntity.call(this, options);
-	this.color = options.color || '#d671c5';
-	this.strength = 100;
+	this.color = options.color || '#000';
+	this.strength = 80;
 	this.slowRate = 1;
 	this.owner = options.owner || 0;
-
 }
 
 Particle.prototype = Object.create(GameEntity.prototype);

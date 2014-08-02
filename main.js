@@ -66,6 +66,7 @@ for (var i = 0; i < 0; i++) {
 	}));
 };
 
+
 function step(timestamp) {
 	clearScreen();
 
