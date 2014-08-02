@@ -202,13 +202,14 @@ Airplane.prototype.display = function(context){
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
 
-	if (this.alive && this.particleClock%3==0){
+	if (this.alive && this.particleClock%2==0){
 		entities.push(new Particle({
 			position: clone(this.position),
-			heading: this.heading -180 + getRandomInt(-10,10),
-			velocity: getRandomInt(1,3)*0.5,
+			heading: this.heading -180 + getRandomInt(-3,3),
+			velocity: getRandomInt(2,6)*0.25,
 			color: this.trailColors[this.id],
-			owner: this
+			owner: this,
+			strength: 120
 		}));
 	}
 
@@ -262,7 +263,7 @@ Airplane.prototype.fireMissile = function(){
 function Particle(options){
 	GameEntity.call(this, options);
 	this.color = options.color || '#000';
-	this.strength = 80;
+	this.strength = options.strength || 80;
 	this.slowRate = 1;
 	this.owner = options.owner || 0;
 }
@@ -274,8 +275,10 @@ Particle.prototype.draw = function(context){
 		context.fillStyle= this.color;
 		context.beginPath();
 		context.moveTo(0,0);
-		context.arc(0,0, this.strength/50+0.1, 0, Math.PI*2, false)
-		context.fill();
+		var rectSize = this.strength/30+0.2;
+		context.fillRect(-rectSize/2, -rectSize/2, rectSize, rectSize);
+		// context.arc(0,0, this.strength/50+0.1, 0, Math.PI*2, false)
+		// context.fill();
 }
 
 Particle.prototype.update = function(){
