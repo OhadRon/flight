@@ -120,11 +120,13 @@ Missile.prototype.update = function(){
 					this.hit = true;
 				}
 			}
+			// Missile hitting another plane
 			if (entity instanceof Airplane){
-				if (entity.alive && entity.id != this.owner && distance(this, entity)<10){
+				if (entity.alive && entity != this.owner && distance(this, entity)<10){
 					entity.die();
 					this.hit = true;
 					this.active = false;
+					this.owner.score++;
 				}
 			}
 		}, this);
@@ -153,6 +155,7 @@ function Airplane(options){
 	this.alive = true;
 	this.trailColors = ['#38a8a7','#c52d2e', '#5d1584', '#177411'];
 	this.particleClock = 0;
+	this.score = 0;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
@@ -167,7 +170,7 @@ Airplane.prototype.die = function(){
 			heading: i*36,
 			velocity: 3,
 			color: this.trailColors[this.id],
-			owner: this.id
+			owner: this
 		}));		
 	};
 }
@@ -181,6 +184,11 @@ Airplane.prototype.draw = function(context){
 	context.lineTo(-10,0);
 	context.lineTo(0,0);
 	context.fill();
+	var scoreText = '' + this.score;
+	context.save();
+		context.rotate(headingToRadians(-this.heading));
+		context.fillText(scoreText, 20, 20);
+	context.restore();
 }
 
 Airplane.prototype.display = function(context){
@@ -196,7 +204,7 @@ Airplane.prototype.update = function(){
 			heading: this.heading -180 + getRandomInt(-10,10),
 			velocity: getRandomInt(1,3)*0.5,
 			color: this.trailColors[this.id],
-			owner: this.id
+			owner: this
 		}));
 	}
 
@@ -235,7 +243,7 @@ Airplane.prototype.fireMissile = function(){
 			position: clone(this.position),
 			heading: this.heading, 
 			velocity: this.velocity,
-			owner: this.id
+			owner: this
 		}));
 		this.lastMissileTime = clock;
 	}	
