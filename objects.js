@@ -132,8 +132,8 @@ Missile.prototype.update = function(){
 	if (this.hit){
 		this.velocity = 0;
 	} else {
-		this.velocity += 0.09;
-		if (this.velocity>8) this.velocity = 8;		
+		this.velocity += 0.14;
+		if (this.velocity>9) this.velocity = 9;		
 	}
 
 	if (this.history[0].x<0 || this.history[0].x>canvas.width || this.history[0].y<0 || this.history[0].y>canvas.height ){

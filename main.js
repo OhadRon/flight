@@ -22,8 +22,8 @@ var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
 // retina fixes
-canvas.width = parseInt(window.getComputedStyle(canvas).width)*2;
-canvas.height = parseInt(window.getComputedStyle(canvas).height)*2;
+canvas.width = parseInt(window.getComputedStyle(canvas).width)*window.devicePixelRatio;
+canvas.height = parseInt(window.getComputedStyle(canvas).height)*window.devicePixelRatio;
 
 ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
@@ -31,10 +31,11 @@ var entities = [];
 
 entities.push(new Airplane({
 	position: {
-		x: 800,
+		x: 900,
 		y: 600
 	}, 
 	id: 0,
+	heading: 270,
 	controls: {
 		left: 37,
 		right: 39,
@@ -44,10 +45,11 @@ entities.push(new Airplane({
 
 entities.push(new Airplane({
 	position: {
-		x: 400,
+		x: 300,
 		y: 600
 	}, 
 	id: 1,
+	heading: 90,
 	controls: {
 		left: 65,
 		right: 68,
@@ -55,11 +57,11 @@ entities.push(new Airplane({
 	}
 }));
 
-for (var i = 0; i < 15; i++) {
+for (var i = 0; i < 0; i++) {
 	entities.push(new PracticeTarget({
 		position:{
-			x: getRandomInt(0,canvas.width/2),
-			y: getRandomInt(0,canvas.height/2)
+			x: getRandomInt(0,canvas.width),
+			y: getRandomInt(0,canvas.height)
 		}
 	}));
 };
