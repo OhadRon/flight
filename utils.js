@@ -39,3 +39,9 @@ function distance(a, b){
 	var d = Math.sqrt( (a.position.x-b.position.x)*(a.position.x-b.position.x) + (a.position.y-b.position.y)*(a.position.y-b.position.y) );
 	return d;
 }
+
+function heading(a,b){
+	var xDiff = a.position.x - b.position.x;
+	var yDiff = a.position.y - b.position.y;
+	return Math.atan2(yDiff, xDiff) * (180 / Math.PI);
+}

@@ -73,6 +73,7 @@ function Missile(options){
 	this.history = [];
 	this.owner = options.owner || 0;
 	this.hit = false;
+	this.homingMode = false;
 }
 
 Missile.prototype = Object.create(GameEntity.prototype);
@@ -92,7 +93,11 @@ Missile.prototype.draw = function(context) {
 Missile.prototype.drawTrails = function(context){
 	context.save();
 	context.strokeStyle="rgba(0,0,0,0.6)";
-	context.lineWidth=1;
+	if (this.homingMode){
+		context.lineWidth=4;
+	} else {
+		context.lineWidth=1;
+	}
 	context.setLineDash([5]);
 	context.beginPath();
 	for (var i = this.history.length - 1; i >= 0; i--) {
@@ -135,6 +140,9 @@ Missile.prototype.update = function(){
 			}
 			// Missile hitting another plane
 			if (entity instanceof Airplane){
+				if (entity.alive && entity != this.owner && distance(this, entity)<90){
+					this.homingMode = entity;
+				}				
 				if (entity.alive && entity != this.owner && distance(this, entity)<10){
 					entity.die();
 					this.hit = true;
@@ -143,6 +151,10 @@ Missile.prototype.update = function(){
 				}
 			}
 		}, this);
+
+		if(this.homingMode){
+			this.heading += heading(this, this.homingMode);
+		}
 	}
 
 	// Engine logic
