@@ -153,7 +153,7 @@ Missile.prototype.update = function(){
 		}, this);
 
 		if(this.homingMode){
-			this.heading += heading(this, this.homingMode);
+			// this.heading += heading(this, this.homingMode);
 		}
 	}
 
@@ -179,7 +179,7 @@ function Airplane(options){
 	this.id = options.id || 0;
 	this.controls = options.controls;
 	this.alive = true;
-	this.trailColors = ['#38a8a7','#c52d2e', '#5d1584', '#177411'];
+	this.trailColors = ['#40d7d3','#95d484', '#5d1584', '#177411'];
 	this.score = 0;
 
 	// Unused for now:
@@ -210,7 +210,7 @@ Airplane.prototype.die = function(){
 }
 
 Airplane.prototype.draw = function(context){
-	context.fillStyle="#555";
+	context.fillStyle="#fff";
 	context.beginPath();
 	context.moveTo(0,0);
 	context.lineTo(10,0);
