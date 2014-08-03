@@ -30,7 +30,7 @@ var entities = [];
 entities.push(new Airplane({
 	position: {
 		x: 900,
-		y: 540
+		y: 340
 	}, 
 	id: 0,
 	heading: 270,
@@ -45,7 +45,7 @@ entities.push(new Airplane({
 entities.push(new Airplane({
 	position: {
 		x: 300,
-		y: 600
+		y: 400
 	}, 
 	id: 1,
 	heading: 90,

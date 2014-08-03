@@ -36,6 +36,9 @@ GameEntity.prototype = {
 	update: function(){
 		this.position.x += this.velocity*Math.cos(headingToRadians(this.heading-90));
 		this.position.y += this.velocity*Math.sin(headingToRadians(this.heading-90));
+
+		if(this.heading<0) this.heading += 360; 
+		this.heading = this.heading%360;
 	}
 };
 
@@ -74,13 +77,18 @@ function Missile(options){
 	this.owner = options.owner || 0;
 	this.hit = false;
 	this.homingMode = false;
+	console.log('Launching|| D:', distance(this,entities[1]), 'This to target: ' ,Math.abs(this.heading-heading(this, entities[1])),  'angle between directions: ' ,Math.abs(this.heading-entities[1].heading));
 }
 
 Missile.prototype = Object.create(GameEntity.prototype);
 Missile.prototype.constructor = Missile;
 
 Missile.prototype.draw = function(context) {
-	context.fillStyle="rgba(0,0,0,0.6)";
+	if (this.homingMode){
+		context.fillStyle="rgba(255,255,255,0.6)";	
+	} else {
+		context.fillStyle="rgba(0,0,0,0.6)";
+	}
 	context.beginPath();
 	context.moveTo(0,0);
 	context.lineTo(5,0);
@@ -92,12 +100,12 @@ Missile.prototype.draw = function(context) {
 
 Missile.prototype.drawTrails = function(context){
 	context.save();
-	context.strokeStyle="rgba(0,0,0,0.6)";
 	if (this.homingMode){
-		context.lineWidth=4;
+		context.strokeStyle="rgba(255,255,255,0.6)";	
 	} else {
-		context.lineWidth=1;
+		context.strokeStyle="rgba(0,0,0,0.6)";
 	}
+	context.lineWidth=1;
 	context.setLineDash([5]);
 	context.beginPath();
 	for (var i = this.history.length - 1; i >= 0; i--) {
@@ -140,12 +148,14 @@ Missile.prototype.update = function(){
 			}
 			// Missile hitting another plane
 			if (entity instanceof Airplane){
-				if (entity.alive 
+				if (!this.homingMode
+					&& entity.alive 
 					&& entity != this.owner 
 					&& distance(this, entity)<100 
-					&& Math.abs(this.heading-heading(this, entity))<40 // in front of the missile
-					&& Math.abs(this.heading-entity.heading)<40){ // in rear aspect 
+					&& Math.abs(this.heading-heading(this, entity))<50 // in front of the missile
+					&& Math.abs(this.heading-entity.heading)<60){ // in rear aspect 
 						this.homingMode = entity
+						console.log('HOMING: ', distance(this,entity), Math.abs(this.heading-heading(this, entity)), Math.abs(this.heading-entity.heading));
 				}
 
 				if (entity.alive && entity != this.owner && distance(this, entity)<10){

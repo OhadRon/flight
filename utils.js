@@ -43,5 +43,5 @@ function distance(a, b){
 function heading(a,b){
 	var xDiff = a.position.x - b.position.x;
 	var yDiff = a.position.y - b.position.y;
-	return (Math.atan2(yDiff, xDiff) * (180 / Math.PI)+270)%360;
+	return ((Math.atan2(yDiff, xDiff) * (180 / Math.PI)+270))%360;
 }
