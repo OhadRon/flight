@@ -140,9 +140,14 @@ Missile.prototype.update = function(){
 			}
 			// Missile hitting another plane
 			if (entity instanceof Airplane){
-				if (entity.alive && entity != this.owner && distance(this, entity)<90){
-					this.homingMode = entity;
-				}				
+				if (entity.alive 
+					&& entity != this.owner 
+					&& distance(this, entity)<100 
+					&& Math.abs(this.heading-heading(this, entity))<40 // in front of the missile
+					&& Math.abs(this.heading-entity.heading)<40){ // in rear aspect 
+						this.homingMode = entity
+				}
+
 				if (entity.alive && entity != this.owner && distance(this, entity)<10){
 					entity.die();
 					this.hit = true;
@@ -153,7 +158,8 @@ Missile.prototype.update = function(){
 		}, this);
 
 		if(this.homingMode){
-			// this.heading += heading(this, this.homingMode);
+			console.log('changing heading');
+			this.heading = heading(this,this.homingMode);
 		}
 	}
 
