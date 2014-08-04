@@ -226,6 +226,24 @@ Airplane.prototype.die = function(){
 }
 
 Airplane.prototype.draw = function(context){
+
+	// Shadow
+
+	context.rotate(headingToRadians(-this.heading));
+	context.translate(45,45);
+	context.rotate(headingToRadians(this.heading));
+	context.fillStyle="rgba(0,0,0,0.2)";
+	context.beginPath();
+	context.moveTo(0,0);
+	context.lineTo(10,0);
+	context.lineTo(0,-25);
+	context.lineTo(-10,0);
+	context.lineTo(0,0);
+	context.fill();
+	context.rotate(headingToRadians(-this.heading));
+	context.translate(-45,-45);
+	context.rotate(headingToRadians(this.heading));
+
 	context.fillStyle="#fff";
 	context.beginPath();
 	context.moveTo(0,0);
