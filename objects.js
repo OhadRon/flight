@@ -5,6 +5,7 @@ function GameEntity(options) {
 	this.position =  options.position || { x: 0, y:0 };
 	this.heading =  options.heading || 0;
 	this.active = true;
+	this.wrapping = true;
 }
 
 GameEntity.prototype = {
@@ -37,7 +38,14 @@ GameEntity.prototype = {
 		this.position.x += this.velocity*Math.cos(headingToRadians(this.heading-90));
 		this.position.y += this.velocity*Math.sin(headingToRadians(this.heading-90));
 
-		if(this.heading<0) this.heading += 360; 
+		if (this.wrapping){
+			if (this.position.x<0) this.position.x=canvas.width;
+			if (this.position.x>canvas.width) this.position.x = 0;
+			if (this.position.y<0) this.position.y=canvas.height;
+			if (this.position.y>canvas.height) this.position.y = 0;
+		};
+
+		if(this.heading<0) this.heading += 360;
 		this.heading = this.heading%360;
 	}
 };
@@ -77,6 +85,7 @@ function Missile(options){
 	this.owner = options.owner || 0;
 	this.hit = false;
 	this.homingMode = false;
+	this.wrapping = false;
 	console.log('Launching|| D:', distance(this,entities[1]), 'This to target: ' ,Math.abs(this.heading-heading(this, entities[1])),  'angle between directions: ' ,Math.abs(this.heading-entities[1].heading));
 }
 
@@ -85,7 +94,7 @@ Missile.prototype.constructor = Missile;
 
 Missile.prototype.draw = function(context) {
 	if (this.homingMode){
-		context.fillStyle="rgba(255,255,255,0.6)";	
+		context.fillStyle="rgba(255,255,255,0.6)";
 	} else {
 		context.fillStyle="rgba(0,0,0,0.6)";
 	}
@@ -101,7 +110,7 @@ Missile.prototype.draw = function(context) {
 Missile.prototype.drawTrails = function(context){
 	context.save();
 	if (this.homingMode){
-		context.strokeStyle="rgba(255,255,255,0.6)";	
+		context.strokeStyle="rgba(255,255,255,0.6)";
 	} else {
 		context.strokeStyle="rgba(0,0,0,0.6)";
 	}
@@ -139,7 +148,7 @@ Missile.prototype.update = function(){
 
 		// Check collisions
 		entities.forEach(function(entity){
-			// Missile hitting a practice target 
+			// Missile hitting a practice target
 			if (entity instanceof PracticeTarget){
 				if (distance(this, entity)<10){
 					entity.exploded = true;
@@ -149,11 +158,11 @@ Missile.prototype.update = function(){
 			// Missile hitting another plane
 			if (entity instanceof Airplane){
 				if (!this.homingMode
-					&& entity.alive 
-					&& entity != this.owner 
-					&& distance(this, entity)<100 
+					&& entity.alive
+					&& entity != this.owner
+					&& distance(this, entity)<100
 					&& Math.abs(this.heading-heading(this, entity))<50 // in front of the missile
-					&& Math.abs(this.heading-entity.heading)<60){ // in rear aspect 
+					&& Math.abs(this.heading-entity.heading)<60){ // in rear aspect
 						this.homingMode = entity
 						console.log('HOMING: ', distance(this,entity), Math.abs(this.heading-heading(this, entity)), Math.abs(this.heading-entity.heading));
 				}
@@ -178,7 +187,7 @@ Missile.prototype.update = function(){
 		this.velocity = 0;
 	} else {
 		this.velocity += 0.14;
-		if (this.velocity>9) this.velocity = 9;		
+		if (this.velocity>9) this.velocity = 9;
 	}
 
 	// Kill this missile if it goes out of bounds
@@ -189,7 +198,7 @@ Missile.prototype.update = function(){
 
 function Airplane(options){
 	GameEntity.call(this,options);
-	
+
 	this.missiles = [];
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
@@ -221,7 +230,7 @@ Airplane.prototype.die = function(){
 			color: this.trailColors[this.id],
 			owner: this,
 			strength: 140
-		}));		
+		}));
 	};
 }
 
@@ -297,13 +306,13 @@ Airplane.prototype.update = function(){
 
 		if (keys[this.controls.slow]){
 			if (this.velocity<1) this.velocity = 1;
-				else 
+				else
 			this.velocity -= 0.25;
-		}	
+		}
 
 		if (keys[this.controls.fire]){
 			this.fireMissile();
-		}		
+		}
 	} else {
 		this.velocity -= 0.1;
 		if (this.velocity<0) this.velocity = 0;
@@ -317,12 +326,12 @@ Airplane.prototype.fireMissile = function(){
 	if (clock-this.lastMissileTime>30){
 		entities.push(new Missile({
 			position: clone(this.position),
-			heading: this.heading, 
+			heading: this.heading,
 			velocity: this.velocity+2,
 			owner: this
 		}));
 		this.lastMissileTime = clock;
-	}	
+	}
 }
 
 // Particle!
@@ -355,7 +364,7 @@ Particle.prototype.update = function(){
 		this.active = false;
 	} else {
 		this.strength -=1;
-		this.velocity -= this.slowRate*0.01;		
+		this.velocity -= this.slowRate*0.01;
 		if (this.velocity<0) this.velocity = 0;
 	}
 

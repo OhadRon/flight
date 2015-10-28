@@ -1,7 +1,7 @@
 // Pressed keys list
 var keys = [];
 
-window.addEventListener("keydown",	
+window.addEventListener("keydown",
 	function(e){
 		console.log('pressed', e.keyCode);
 		keys[e.keyCode] = true;
@@ -31,7 +31,7 @@ entities.push(new Airplane({
 	position: {
 		x: 900,
 		y: 340
-	}, 
+	},
 	id: 0,
 	heading: 270,
 	controls: {
@@ -46,7 +46,7 @@ entities.push(new Airplane({
 	position: {
 		x: 300,
 		y: 400
-	}, 
+	},
 	id: 1,
 	heading: 90,
 	controls: {
@@ -77,7 +77,7 @@ function step(timestamp) {
 			entities.splice(i,1);
 		} else {
 			entities[i].update();
-			entities[i].display(ctx);			
+			entities[i].display(ctx);
 		}
 	};
 
