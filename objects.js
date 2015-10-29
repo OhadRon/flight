@@ -386,21 +386,49 @@ Particle.prototype.update = function(){
 function AmmoCrate(options){
 	GameEntity.call(this,options);
 	this.lifeTime = 600;
+	this.growing = true;
+	this.size = 6;
 }
 
 AmmoCrate.prototype = Object.create(GameEntity.prototype);
 AmmoCrate.prototype.constructor = AmmoCrate;
 
 AmmoCrate.prototype.draw = function(context){
-	context.fillStyle='#323232';
+	context.fillStyle='rgba(0,0,0,0.5)';
 	context.beginPath();
-	context.ellipse(0,0,6,6,0,0,Math.PI*2);
+	context.ellipse(0,0,this.size,this.size,0,0,Math.PI*2);
 	context.fill();
+
+	context.fillStyle='rgba(255,255,255,0.6)';
+	context.beginPath();
+	context.ellipse(0,0,2,2,0,0,Math.PI*2);
+	context.fill();
+
+	context.translate(45,45);
+	context.fillStyle='rgba(0,0,0,0.2)';
+	context.beginPath();
+	context.ellipse(0,0,this.size,this.size,0,0,Math.PI*2);
+	context.fill();
+	context.translate(-45,-45);
+
 }
 
 AmmoCrate.prototype.update = function(){
 	this.lifeTime -= 1;
 	if (this.lifeTime<0) this.active = false;
+
+	if (this.growing){
+		this.size +=0.2;
+		if (this.size>9){
+			this.growing = false;
+		}
+	} else {
+		this.size -=0.2;
+		if (this.size<5){
+			this.growing = true;
+		}
+	}
+
 	entities.forEach(function(entity){
 		if (entity instanceof Airplane){
 			if (distance(this, entity)<20) {

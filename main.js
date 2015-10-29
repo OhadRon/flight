@@ -89,7 +89,7 @@ function step(timestamp) {
 				y: getRandomInt(0,canvas.height)
 			}
 		}));
-		crateClock = 400;
+		crateClock = 180;
 	}
 
 	clock++;
