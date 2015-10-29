@@ -206,6 +206,7 @@ function Airplane(options){
 	this.alive = true;
 	this.trailColors = ['#40d7d3','#95d484', '#5d1584', '#177411'];
 	this.score = 0;
+	this.ammo = 4;
 
 	// Unused for now:
 	this.throttle = 0;
@@ -262,6 +263,7 @@ Airplane.prototype.draw = function(context){
 	context.lineTo(0,0);
 	context.fill();
 	this.drawScore(context);
+	this.drawAmmo(context);
 }
 
 Airplane.prototype.drawScore = function(context){
@@ -269,6 +271,16 @@ Airplane.prototype.drawScore = function(context){
 	context.save();
 		context.rotate(headingToRadians(-this.heading));
 		context.fillText(scoreText, 20, 20);
+	context.restore();
+}
+
+Airplane.prototype.drawAmmo = function(context){
+	context.save();
+		context.rotate(headingToRadians(-this.heading));
+		for (var i = 0; i < this.ammo; i++) {
+			context.fillStyle="#000"
+			context.fillRect(0+(i*7), 0, 5,5);
+		}
 	context.restore();
 }
 
@@ -323,7 +335,8 @@ Airplane.prototype.update = function(){
 }
 
 Airplane.prototype.fireMissile = function(){
-	if (clock-this.lastMissileTime>30){
+	if (clock-this.lastMissileTime>30 && this.ammo > 0){
+		this.ammo--;
 		entities.push(new Missile({
 			position: clone(this.position),
 			heading: this.heading,
