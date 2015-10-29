@@ -278,7 +278,7 @@ Airplane.prototype.drawAmmo = function(context){
 	context.save();
 		context.rotate(headingToRadians(-this.heading));
 		for (var i = 0; i < this.ammo; i++) {
-			context.fillStyle="#000"
+			context.fillStyle="rgba(0,0,0,0.6)"
 			context.fillRect(0+(i*7), 0, 5,5);
 		}
 	context.restore();
@@ -381,4 +381,32 @@ Particle.prototype.update = function(){
 		if (this.velocity<0) this.velocity = 0;
 	}
 
+}
+
+function AmmoCrate(options){
+	GameEntity.call(this,options);
+	this.lifeTime = 600;
+}
+
+AmmoCrate.prototype = Object.create(GameEntity.prototype);
+AmmoCrate.prototype.constructor = AmmoCrate;
+
+AmmoCrate.prototype.draw = function(context){
+	context.fillStyle='#323232';
+	context.beginPath();
+	context.ellipse(0,0,6,6,0,0,Math.PI*2);
+	context.fill();
+}
+
+AmmoCrate.prototype.update = function(){
+	this.lifeTime -= 1;
+	if (this.lifeTime<0) this.active = false;
+	entities.forEach(function(entity){
+		if (entity instanceof Airplane){
+			if (distance(this, entity)<20) {
+				this.active = false;
+				entity.ammo +=1;
+			}
+		}
+	}, this);
 }

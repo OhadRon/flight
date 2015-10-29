@@ -17,6 +17,7 @@ false);
 // Setup stuff
 
 var clock = 0;
+var crateClock = 100;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
@@ -81,7 +82,18 @@ function step(timestamp) {
 		}
 	};
 
+	if (crateClock==0){
+		entities.push(new AmmoCrate({
+			position:{
+				x: getRandomInt(0,canvas.width),
+				y: getRandomInt(0,canvas.height)
+			}
+		}));
+		crateClock = 400;
+	}
+
 	clock++;
+	crateClock--;
 	requestAnimationFrame(step);
 }
 
