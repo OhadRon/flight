@@ -31,12 +31,39 @@ ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 var startMenu = new StartMenu({});
 entities.push(startMenu);
 
+var demoAirplanes = [];
+var DEMO_AIRPLANES_COUNT = 30;
+for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
+	demoAirplanes.push(new Airplane({
+		position: {
+			x: getRandomInt(0,canvas.width),
+			y: getRandomInt(0,canvas.height)
+		},
+		id: 999,
+		heading: getRandomInt(0,360),
+		controls: {
+			left: 999,
+			right: 999,
+			fire: 999,
+			slow: 999
+		},
+		trailColor: '#ddd',
+		ammo: 1,
+		flareAmmo: 1
+	}));
+}
+for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
+	entities.push(demoAirplanes[i]);
+}
+
 var startGame = function(){
 
 	crateClock = 100;
 	gameStarted = true;
 	startMenu.active = false;
-
+	for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
+		demoAirplanes[i].active = false;
+	}
 
 	entities.push(new Airplane({
 		position: {

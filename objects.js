@@ -208,10 +208,11 @@ function Airplane(options){
 	this.controls = options.controls;
 	this.alive = true;
 	this.trailColors = ['#c4717a','#6c79d5', '#82c97a', '#cb992a'];
+	this.trailColor = options.trailColor || this.trailColors[this.id];
 	this.score = 0;
-	this.ammo = 4;
+	this.ammo = options.ammo || 4;
 	this.lastFlareTime = 0;
-	this.flareAmmo = 10;
+	this.flareAmmo = options.flareAmmo || 10;
 	this.flares = [];
 	this.nextParticle = 0;
 }
@@ -317,7 +318,7 @@ Airplane.prototype.update = function(){
 				position: clone(this.position),
 				heading: this.heading -180 + getRandomInt(-3,3),
 				velocity: getRandomInt(2,6)*0.25,
-				color: this.trailColors[this.id],
+				color: this.trailColor,
 				owner: this,
 				strength: 120
 			}));
@@ -506,10 +507,14 @@ StartMenu.prototype = Object.create(GameEntity.prototype);
 StartMenu.prototype.constructor = StartMenu;
 
 StartMenu.prototype.draw = function(context){
+	context.fillStyle = "rgba(255,255,255,0.5)";
+	context.fillRect(canvas.width/2-500, canvas.height/2-230, 1000,400);
 	context.font = '70px sans-serif';
 	context.fillStyle = '#000';
 	context.textAlign = 'center';
 	context.fillText("Triangles Shooting Missiles", canvas.width/2, canvas.height/2-100);
+	context.font = '34px sans-serif';
+	context.fillText("Shoot missiles and emit flares to avoid them", canvas.width/2, canvas.height/2-30);
 	context.font = '24px sans-serif';
 	context.fillText("Player 1: Arrows | Player 2: AWSD | Player 3: HUJK", canvas.width/2, canvas.height/2+50);
 	context.font = '17px sans-serif';
