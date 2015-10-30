@@ -16,72 +16,83 @@ false);
 
 // Setup stuff
 
+var entities = [];
 var clock = 0;
-var crateClock = 100;
+var crateClock;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var gameStarted = false;
 
 // Retina fixes
 canvas.width = parseInt(window.getComputedStyle(canvas).width)*window.devicePixelRatio;
 canvas.height = parseInt(window.getComputedStyle(canvas).height)*window.devicePixelRatio;
 ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-var entities = [];
+var startMenu = new StartMenu({});
+entities.push(startMenu);
 
-entities.push(new Airplane({
-	position: {
-		x: 900,
-		y: 340
-	},
-	id: 0,
-	heading: 270,
-	controls: {
-		left: 37,
-		right: 39,
-		fire: 38,
-		slow: 40
-	}
-}));
+var startGame = function(){
 
-entities.push(new Airplane({
-	position: {
-		x: 300,
-		y: 400
-	},
-	id: 1,
-	heading: 90,
-	controls: {
-		left: 65,
-		right: 68,
-		fire: 87,
-		slow: 83
-	}
-}));
+	crateClock = 100;
+	gameStarted = true;
+	startMenu.active = false;
 
-entities.push(new Airplane({
-	position: {
-		x: 600,
-		y: 400
-	},
-	id: 2,
-	heading: 0,
-	controls: {
-		left: 72,
-		right: 75,
-		fire: 85,
-		slow: 74
-	}
-}));
 
-// Practice targets setup
-for (var i = 0; i < 0; i++) {
-	entities.push(new PracticeTarget({
-		position:{
+	entities.push(new Airplane({
+		position: {
 			x: getRandomInt(0,canvas.width),
 			y: getRandomInt(0,canvas.height)
+		},
+		id: 0,
+		heading: getRandomInt(0,360),
+		controls: {
+			left: 37,
+			right: 39,
+			fire: 38,
+			slow: 40
 		}
 	}));
-};
+
+	entities.push(new Airplane({
+		position: {
+			x: getRandomInt(0,canvas.width),
+			y: getRandomInt(0,canvas.height)
+		},
+		id: 1,
+		heading: getRandomInt(0,360),
+		controls: {
+			left: 65,
+			right: 68,
+			fire: 87,
+			slow: 83
+		}
+	}));
+
+	entities.push(new Airplane({
+		position: {
+			x: getRandomInt(0,canvas.width),
+			y: getRandomInt(0,canvas.height)
+		},
+		id: 2,
+		heading: getRandomInt(0,360),
+		controls: {
+			left: 72,
+			right: 75,
+			fire: 85,
+			slow: 74
+		}
+	}));
+
+	// Practice targets setup
+	for (var i = 0; i < 0; i++) {
+		entities.push(new PracticeTarget({
+			position:{
+				x: getRandomInt(0,canvas.width),
+				y: getRandomInt(0,canvas.height)
+			}
+		}));
+	};
+}
 
 // Game loop
 function step(timestamp) {
@@ -97,18 +108,25 @@ function step(timestamp) {
 		}
 	};
 
-	if (crateClock==0){
-		entities.push(new AmmoCrate({
-			position:{
-				x: getRandomInt(0,canvas.width),
-				y: getRandomInt(0,canvas.height)
-			}
-		}));
-		crateClock = 180;
+	if (gameStarted){
+		if (crateClock==0){
+			entities.push(new AmmoCrate({
+				position:{
+					x: getRandomInt(0,canvas.width),
+					y: getRandomInt(0,canvas.height)
+				}
+			}));
+			crateClock = 180;
+		}
+
+		crateClock--;
+	} else {
+		if (keys[32]){
+			startGame();
+		}
 	}
 
 	clock++;
-	crateClock--;
 	requestAnimationFrame(step);
 }
 

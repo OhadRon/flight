@@ -389,6 +389,8 @@ function AmmoCrate(options){
 	this.lifeTime = 600;
 	this.growing = true;
 	this.size = 0;
+	this.heading = getRandomInt(0,359);
+	this.velocity = 0.5;
 }
 
 AmmoCrate.prototype = Object.create(GameEntity.prototype);
@@ -405,16 +407,22 @@ AmmoCrate.prototype.draw = function(context){
 	context.ellipse(0,0,2,2,0,0,Math.PI*2);
 	context.fill();
 
+
+	context.rotate(headingToRadians(-this.heading));
 	context.translate(45,45);
+	context.rotate(headingToRadians(this.heading));
 	context.fillStyle='rgba(0,0,0,0.2)';
 	context.beginPath();
 	context.ellipse(0,0,this.size,this.size,0,0,Math.PI*2);
 	context.fill();
+	context.rotate(headingToRadians(-this.heading));
 	context.translate(-45,-45);
-
+	context.rotate(headingToRadians(this.heading));
 }
 
 AmmoCrate.prototype.update = function(){
+	GameEntity.prototype.update.call(this);
+
 	this.lifeTime -= 1;
 	if (this.lifeTime<0) this.active = false;
 
@@ -439,3 +447,37 @@ AmmoCrate.prototype.update = function(){
 		}
 	}, this);
 }
+
+function NewObject(options){
+	GameEntity.call(this,options);
+}
+
+NewObject.prototype = Object.create(GameEntity.prototype);
+NewObject.prototype.constructor = NewObject;
+
+NewObject.prototype.draw = function(context){};
+NewObject.prototype.update = function(){
+	GameEntity.prototype.update.call(this);
+};
+
+function StartMenu(options){
+	GameEntity.call(this,options);
+}
+
+StartMenu.prototype = Object.create(GameEntity.prototype);
+StartMenu.prototype.constructor = StartMenu;
+
+StartMenu.prototype.draw = function(context){
+	context.font = '70px sans-serif';
+	context.fillStyle = '#000';
+	context.textAlign = 'center';
+	context.fillText("Triangles Shooting Missiles", canvas.width/2, canvas.height/2-100);
+	context.font = '24px sans-serif';
+	context.fillText("Player 1: Arrows | Player 2: AWSD | Player 3: HUJK", canvas.width/2, canvas.height/2+50);
+	context.font = '17px sans-serif';
+	context.fillText("Press the spacebar to start", canvas.width/2, canvas.height/2+100);
+};
+
+StartMenu.prototype.update = function(){
+	GameEntity.prototype.update.call(this);
+};
