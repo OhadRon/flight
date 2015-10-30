@@ -573,10 +573,23 @@ Flare.prototype.draw = function(context){
 
 Flare.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
+	if (this.power<1) this.active = false;
+
 	this.velocity *= 0.97;
 	this.power *= 0.97;
 	this.heading += 0.3;
-	if (this.power<1) this.active = false;
+
+	if (clock%3==1){
+		entities.push(new Particle({
+			position: clone(this.position),
+			heading: this.heading -180 + getRandomInt(-3,3),
+			velocity: getRandomInt(2,6)*0.25,
+			color: 'rgba(255,255,255,0.3)',
+			owner: this,
+			strength: 80
+		}));
+	}
+
 };
 
 
