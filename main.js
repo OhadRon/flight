@@ -49,7 +49,8 @@ for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
 		},
 		trailColor: '#ddd',
 		ammo: 1,
-		flareAmmo: 1
+		flareAmmo: 1,
+		shieldTime: 1
 	}));
 }
 for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
@@ -142,7 +143,7 @@ function step(timestamp) {
 					x: getRandomInt(0,canvas.width),
 					y: getRandomInt(0,canvas.height)
 				},
-				ammoType: getRandomInt(0,1)
+				ammoType: getRandomInt(0,2)
 			}));
 			crateClock = 100;
 		}

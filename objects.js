@@ -170,10 +170,14 @@ Missile.prototype.update = function(){
 				}
 
 				if (entity.alive && entity != this.owner && distance(this, entity)<10){
-					entity.die();
+					if (entity.shieldTime){
+						entity.shieldTime = 0;
+					} else {
+						entity.die();
+						this.owner.score++;
+					}
 					this.hit = true;
 					this.active = false;
-					this.owner.score++;
 				}
 			}
 		}, this);
@@ -215,6 +219,7 @@ function Airplane(options){
 	this.flareAmmo = options.flareAmmo || 10;
 	this.flares = [];
 	this.nextParticle = 0;
+	this.shieldTime = options.shieldTime || 200;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
@@ -269,6 +274,15 @@ Airplane.prototype.draw = function(context){
 	this.drawScore(context);
 	this.drawAmmo(context);
 	this.drawFlares(context);
+
+	if (this.shieldTime>0){
+		context.beginPath();
+		context.strokeStyle = 'rgba(255,255,255,0.3)';
+		if (this.shieldTime<70 && this.shieldTime%3 == 0) context.strokeStyle = 'rgba(255,255,255,0)';
+		context.ellipse(0,0-10,25,25,0,0,Math.PI*2);
+		context.stroke();
+
+	}
 }
 
 Airplane.prototype.drawScore = function(context){
@@ -301,6 +315,11 @@ Airplane.prototype.drawFlares = function(context){
 
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
+
+	// Shield logic
+	if (this.shieldTime>0){
+		this.shieldTime--;
+	}
 
 	// Clear dead flares
 
@@ -359,7 +378,10 @@ Airplane.prototype.update = function(){
 		if (this.velocity<0) this.velocity = 0;
 
 		// Respawn after 100 frames
-		if (clock > this.deathTime+100) this.alive = true;
+		if (clock > this.deathTime+100) {
+			this.alive = true;
+			this.shieldTime = 300;
+		}
 	}
 }
 
@@ -436,7 +458,8 @@ function AmmoCrate(options){
 	this.velocity = 0.5;
 	this.ammoTypes = {
 		MISSILE: 0,
-		FLARE: 1
+		FLARE: 1,
+		SHIELD: 2
 	};
 	this.ammoType = options.ammoType || this.ammoTypes.MISSILE;
 }
@@ -447,12 +470,15 @@ AmmoCrate.prototype.constructor = AmmoCrate;
 AmmoCrate.prototype.draw = function(context){
 	if (this.ammoType == this.ammoTypes.MISSILE)	context.fillStyle='rgba(0,0,0,0.5)';
 	if (this.ammoType == this.ammoTypes.FLARE)	context.fillStyle='rgba(255,255,255,0.5)';
+	if (this.ammoType == this.ammoTypes.SHIELD)	context.fillStyle='rgba(141, 204, 250, 0.5)';
 	context.beginPath();
 	context.ellipse(0,0,this.size,this.size,0,0,Math.PI*2);
 	context.fill();
 
 	if (this.ammoType == this.ammoTypes.MISSILE)	context.fillStyle='rgba(255,255,255,0.2)';
 	if (this.ammoType == this.ammoTypes.FLARE)	context.fillStyle='rgba(0,0,0,0.2)';
+	if (this.ammoType == this.ammoTypes.SHIELD)	context.fillStyle='rgba(27, 27, 27, 0.5)';
+
 	context.beginPath();
 	context.ellipse(0,0,2,2,0,0,Math.PI*2);
 	context.fill();
@@ -494,6 +520,7 @@ AmmoCrate.prototype.update = function(){
 				this.active = false;
 				if (this.ammoType == this.ammoTypes.MISSILE)	entity.ammo +=1;
 				if (this.ammoType == this.ammoTypes.FLARE)	entity.flareAmmo +=1;
+				if (this.ammoType == this.ammoTypes.SHIELD)	entity.shieldTime +=1000;
 			}
 		}
 	}, this);
