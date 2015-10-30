@@ -162,7 +162,9 @@ Missile.prototype.update = function(){
 					&& entity != this.owner
 					&& distance(this, entity)<100
 					&& Math.abs(this.heading-heading(this, entity))<50 // in front of the missile
-					&& Math.abs(this.heading-entity.heading)<60){ // in rear aspect
+					&& Math.abs(this.heading-entity.heading)<60 // in rear aspect
+					&& entity.flares.length == 0)// There are no flares owned by the target
+					{
 						this.homingMode = entity
 						console.log('HOMING: ', distance(this,entity), Math.abs(this.heading-heading(this, entity)), Math.abs(this.heading-entity.heading));
 				}
@@ -177,8 +179,11 @@ Missile.prototype.update = function(){
 		}, this);
 
 		if(this.homingMode){
-			console.log('changing heading');
 			this.heading = heading(this,this.homingMode);
+			if(this.homingMode.flares.length != 0){ // Target has flares
+				 this.homingMode = 0;
+				 console.log('Missle decoyed by flares');
+			}
 		}
 	}
 
@@ -198,17 +203,16 @@ Missile.prototype.update = function(){
 
 function Airplane(options){
 	GameEntity.call(this,options);
-
-	this.missiles = [];
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
 	this.controls = options.controls;
 	this.alive = true;
-	this.trailColors = ['#40d7d3','#95d484', '#5d1584', '#177411'];
+	this.trailColors = ['#c4717a','#6c79d5', '#82c97a', '#cb992a'];
 	this.score = 0;
 	this.ammo = 4;
 	this.lastFlareTime = 0;
-	this.flares = 10;
+	this.flareAmmo = 10;
+	this.flares = [];
 	this.nextParticle = 0;
 }
 
@@ -287,7 +291,7 @@ Airplane.prototype.drawAmmo = function(context){
 Airplane.prototype.drawFlares = function(context){
 	context.save();
 		context.rotate(headingToRadians(-this.heading));
-		for (var i = 0; i < this.flares; i++) {
+		for (var i = 0; i < this.flareAmmo; i++) {
 			context.fillStyle="rgba(255,255,255,0.6)"
 			context.fillRect(20+(i*7), 10, 5,5);
 		}
@@ -296,6 +300,15 @@ Airplane.prototype.drawFlares = function(context){
 
 Airplane.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
+
+	// Clear dead flares
+
+	for (var i = this.flares.length - 1; i >= 0; i--) {
+		if (this.flares[i].power<4){
+			this.flares.splice(i,1);
+			console.log('removed flare');
+		}
+	};
 
 	// Draw particle trail
 	if (this.alive){
@@ -340,7 +353,7 @@ Airplane.prototype.update = function(){
 		if (keys[this.controls.fire]){
 			this.fireMissile();
 		}
-	} else {
+	} else { // If dead
 		this.velocity -= 0.1;
 		if (this.velocity<0) this.velocity = 0;
 
@@ -363,14 +376,16 @@ Airplane.prototype.fireMissile = function(){
 }
 
 Airplane.prototype.emitFlare = function(){
-	if (clock-this.lastFlareTime>42 && this.flares > 0){
-		this.flares--;
-		entities.push(new Flare({
+	if (clock-this.lastFlareTime>42 && this.flareAmmo > 0){
+		this.flareAmmo--;
+		var newFlare = new Flare({
 			position: clone(this.position),
 			heading: this.heading+getRandomInt(-30,30),
 			velocity: this.velocity*0.97,
 			owner: this
-		}));
+		});
+		entities.push(newFlare);
+		this.flares.push(newFlare);
 		this.lastFlareTime = clock;
 	}
 }
