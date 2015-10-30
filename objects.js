@@ -207,10 +207,7 @@ function Airplane(options){
 	this.trailColors = ['#40d7d3','#95d484', '#5d1584', '#177411'];
 	this.score = 0;
 	this.ammo = 4;
-
-	// Unused for now:
-	this.throttle = 0;
-	this.fuel = 100;
+	this.nextParticle = 0;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
@@ -289,14 +286,18 @@ Airplane.prototype.update = function(){
 
 	// Draw particle trail
 	if (this.alive){
-		entities.push(new Particle({
-			position: clone(this.position),
-			heading: this.heading -180 + getRandomInt(-3,3),
-			velocity: getRandomInt(2,6)*0.25,
-			color: this.trailColors[this.id],
-			owner: this,
-			strength: 120
-		}));
+		if (this.nextParticle>10){
+			entities.push(new Particle({
+				position: clone(this.position),
+				heading: this.heading -180 + getRandomInt(-3,3),
+				velocity: getRandomInt(2,6)*0.25,
+				color: this.trailColors[this.id],
+				owner: this,
+				strength: 120
+			}));
+			this.nextParticle = 0;
+		}
+		this.nextParticle += this.velocity;
 	}
 
 	if (this.alive){

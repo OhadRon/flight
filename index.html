@@ -5,10 +5,17 @@
 
 	body{
 		margin: 0;
+		font-family: sans-serif;
+		background-color: #111;
+	}
+
+	#instructions{
+		margin: 20px;
+		color: #aaa;
 	}
 
 	#canvas{
-		border: 1px solid #ddd;
+		border: 1px solid #222;
 		margin: 30 auto;
 		display: block;
 		width: 1600px;
@@ -18,6 +25,16 @@
 </head>
 <body>
 	<canvas id="canvas"></canvas>
+
+<div id="instructions">
+	<h3>Keys:</h3>
+	<ul>
+		<li>Player 1: Arrows</li>
+		<li>Player 2: AWSD</li>
+		<li>Player 3: HUJK</li>
+	</ul>
+</div>
+
 	<script src="utils.js"></script>
 	<script src="objects.js"></script>
 	<script src="main.js"></script>
