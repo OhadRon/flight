@@ -207,6 +207,8 @@ function Airplane(options){
 	this.trailColors = ['#40d7d3','#95d484', '#5d1584', '#177411'];
 	this.score = 0;
 	this.ammo = 4;
+	this.lastFlareTime = 0;
+	this.flares = 10;
 	this.nextParticle = 0;
 }
 
@@ -261,13 +263,14 @@ Airplane.prototype.draw = function(context){
 	context.fill();
 	this.drawScore(context);
 	this.drawAmmo(context);
+	this.drawFlares(context);
 }
 
 Airplane.prototype.drawScore = function(context){
 	var scoreText = '' + this.score;
 	context.save();
 		context.rotate(headingToRadians(-this.heading));
-		context.fillText(scoreText, 20, 20);
+		context.fillText(scoreText, 20, 30);
 	context.restore();
 }
 
@@ -277,6 +280,16 @@ Airplane.prototype.drawAmmo = function(context){
 		for (var i = 0; i < this.ammo; i++) {
 			context.fillStyle="rgba(0,0,0,0.6)"
 			context.fillRect(20+(i*7), 0, 5,5);
+		}
+	context.restore();
+}
+
+Airplane.prototype.drawFlares = function(context){
+	context.save();
+		context.rotate(headingToRadians(-this.heading));
+		for (var i = 0; i < this.flares; i++) {
+			context.fillStyle="rgba(255,255,255,0.6)"
+			context.fillRect(20+(i*7), 10, 5,5);
 		}
 	context.restore();
 }
@@ -318,9 +331,10 @@ Airplane.prototype.update = function(){
 		}
 
 		if (keys[this.controls.slow]){
+			this.emitFlare();
 			if (this.velocity<1) this.velocity = 1;
 				else
-			this.velocity -= 0.25;
+			this.velocity -= 0.15;
 		}
 
 		if (keys[this.controls.fire]){
@@ -345,6 +359,19 @@ Airplane.prototype.fireMissile = function(){
 			owner: this
 		}));
 		this.lastMissileTime = clock;
+	}
+}
+
+Airplane.prototype.emitFlare = function(){
+	if (clock-this.lastFlareTime>42 && this.flares > 0){
+		this.flares--;
+		entities.push(new Flare({
+			position: clone(this.position),
+			heading: this.heading+getRandomInt(-30,30),
+			velocity: this.velocity*0.97,
+			owner: this
+		}));
+		this.lastFlareTime = clock;
 	}
 }
 
@@ -448,18 +475,6 @@ AmmoCrate.prototype.update = function(){
 	}, this);
 }
 
-function NewObject(options){
-	GameEntity.call(this,options);
-}
-
-NewObject.prototype = Object.create(GameEntity.prototype);
-NewObject.prototype.constructor = NewObject;
-
-NewObject.prototype.draw = function(context){};
-NewObject.prototype.update = function(){
-	GameEntity.prototype.update.call(this);
-};
-
 function StartMenu(options){
 	GameEntity.call(this,options);
 }
@@ -480,4 +495,43 @@ StartMenu.prototype.draw = function(context){
 
 StartMenu.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
+};
+
+// function NewObject(options){
+// 	GameEntity.call(this,options);
+// }
+//
+// NewObject.prototype = Object.create(GameEntity.prototype);
+// NewObject.prototype.constructor = NewObject;
+//
+// NewObject.prototype.draw = function(context){};
+// NewObject.prototype.update = function(){
+// 	GameEntity.prototype.update.call(this);
+// };
+
+function Flare(options){
+	GameEntity.call(this,options);
+	this.owner = options.owner || 0;
+	this.power = 19;
+}
+
+Flare.prototype = Object.create(GameEntity.prototype);
+Flare.prototype.constructor = Flare;
+
+Flare.prototype.draw = function(context){
+	context.fillStyle= "#ffa0a0";
+	context.beginPath();
+	context.moveTo(0,0);
+	context.fillRect(-this.power/2, -this.power/2, this.power, this.power);
+	context.ellipse(0,0,this.power*0.7,this.power*0.7,0,0,Math.PI*2);
+	context.fill();
+
+};
+
+Flare.prototype.update = function(){
+	GameEntity.prototype.update.call(this);
+	this.velocity *= 0.97;
+	this.power *= 0.97;
+	this.heading += 0.3;
+	if (this.power<1) this.active = false;
 };
