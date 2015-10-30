@@ -114,9 +114,10 @@ function step(timestamp) {
 				position:{
 					x: getRandomInt(0,canvas.width),
 					y: getRandomInt(0,canvas.height)
-				}
+				},
+				ammoType: getRandomInt(0,1)
 			}));
-			crateClock = 180;
+			crateClock = 100;
 		}
 
 		crateClock--;

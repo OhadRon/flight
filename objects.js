@@ -433,18 +433,25 @@ function AmmoCrate(options){
 	this.size = 0;
 	this.heading = getRandomInt(0,359);
 	this.velocity = 0.5;
+	this.ammoTypes = {
+		MISSILE: 0,
+		FLARE: 1
+	};
+	this.ammoType = options.ammoType || this.ammoTypes.MISSILE;
 }
 
 AmmoCrate.prototype = Object.create(GameEntity.prototype);
 AmmoCrate.prototype.constructor = AmmoCrate;
 
 AmmoCrate.prototype.draw = function(context){
-	context.fillStyle='rgba(0,0,0,0.5)';
+	if (this.ammoType == this.ammoTypes.MISSILE)	context.fillStyle='rgba(0,0,0,0.5)';
+	if (this.ammoType == this.ammoTypes.FLARE)	context.fillStyle='rgba(255,255,255,0.5)';
 	context.beginPath();
 	context.ellipse(0,0,this.size,this.size,0,0,Math.PI*2);
 	context.fill();
 
-	context.fillStyle='rgba(255,255,255,0.6)';
+	if (this.ammoType == this.ammoTypes.MISSILE)	context.fillStyle='rgba(255,255,255,0.2)';
+	if (this.ammoType == this.ammoTypes.FLARE)	context.fillStyle='rgba(0,0,0,0.2)';
 	context.beginPath();
 	context.ellipse(0,0,2,2,0,0,Math.PI*2);
 	context.fill();
@@ -484,7 +491,8 @@ AmmoCrate.prototype.update = function(){
 		if (entity instanceof Airplane){
 			if (distance(this, entity)<20) {
 				this.active = false;
-				entity.ammo +=1;
+				if (this.ammoType == this.ammoTypes.MISSILE)	entity.ammo +=1;
+				if (this.ammoType == this.ammoTypes.FLARE)	entity.flareAmmo +=1;
 			}
 		}
 	}, this);
@@ -512,18 +520,6 @@ StartMenu.prototype.update = function(){
 	GameEntity.prototype.update.call(this);
 };
 
-// function NewObject(options){
-// 	GameEntity.call(this,options);
-// }
-//
-// NewObject.prototype = Object.create(GameEntity.prototype);
-// NewObject.prototype.constructor = NewObject;
-//
-// NewObject.prototype.draw = function(context){};
-// NewObject.prototype.update = function(){
-// 	GameEntity.prototype.update.call(this);
-// };
-
 function Flare(options){
 	GameEntity.call(this,options);
 	this.owner = options.owner || 0;
@@ -550,3 +546,16 @@ Flare.prototype.update = function(){
 	this.heading += 0.3;
 	if (this.power<1) this.active = false;
 };
+
+
+// function NewObject(options){
+// 	GameEntity.call(this,options);
+// }
+//
+// NewObject.prototype = Object.create(GameEntity.prototype);
+// NewObject.prototype.constructor = NewObject;
+//
+// NewObject.prototype.draw = function(context){};
+// NewObject.prototype.update = function(){
+// 	GameEntity.prototype.update.call(this);
+// };
