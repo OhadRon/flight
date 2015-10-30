@@ -279,7 +279,7 @@ Airplane.prototype.drawAmmo = function(context){
 		context.rotate(headingToRadians(-this.heading));
 		for (var i = 0; i < this.ammo; i++) {
 			context.fillStyle="rgba(0,0,0,0.6)"
-			context.fillRect(0+(i*7), 0, 5,5);
+			context.fillRect(20+(i*7), 0, 5,5);
 		}
 	context.restore();
 }
@@ -387,7 +387,7 @@ function AmmoCrate(options){
 	GameEntity.call(this,options);
 	this.lifeTime = 600;
 	this.growing = true;
-	this.size = 6;
+	this.size = 0;
 }
 
 AmmoCrate.prototype = Object.create(GameEntity.prototype);

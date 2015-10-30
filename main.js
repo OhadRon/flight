@@ -58,6 +58,21 @@ entities.push(new Airplane({
 	}
 }));
 
+entities.push(new Airplane({
+	position: {
+		x: 600,
+		y: 400
+	},
+	id: 2,
+	heading: 0,
+	controls: {
+		left: 72,
+		right: 75,
+		fire: 85,
+		slow: 74
+	}
+}));
+
 // Practice targets setup
 for (var i = 0; i < 0; i++) {
 	entities.push(new PracticeTarget({
