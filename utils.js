@@ -45,3 +45,33 @@ function heading(a,b){
 	var yDiff = a.position.y - b.position.y;
 	return ((Math.atan2(yDiff, xDiff) * (180 / Math.PI)+270))%360;
 }
+
+function monitorGamepad(index){
+	var gamepad = navigator.getGamepads()[index]
+	console.log('Stats for gampad '+index+':');
+	if(gamepad){
+			console.log('Connected succsefully as',gamepad.id)
+			console.log('Axes:',gamepad.axes[0],gamepad.axes[1]);
+			console.log('Buttons:',gamepad.buttons[0].pressed
+			,gamepad.buttons[1].pressed
+			,gamepad.buttons[2].pressed
+			,gamepad.buttons[3].pressed
+			,gamepad.buttons[4].pressed
+			,gamepad.buttons[5].pressed
+			,gamepad.buttons[6].pressed
+			,gamepad.buttons[7].pressed
+			,gamepad.buttons[8].pressed
+			,gamepad.buttons[9].pressed
+		);
+	}
+}
+
+function gamepadButtonPressed(index,button){
+	var gamepad = navigator.getGamepads()[index];
+	if (gamepad != undefined) return gamepad.buttons[button].pressed;
+}
+
+function gamepadAxisPressed(index,axis,value){
+	var gamepad = navigator.getGamepads()[index];
+	if (gamepad != undefined) return gamepad.axes[axis] == value;
+}

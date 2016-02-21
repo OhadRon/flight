@@ -47,6 +47,7 @@ for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
 			fire: 999,
 			slow: 999
 		},
+		gamePadController: null,
 		trailColor: '#ddd',
 		ammo: 1,
 		flareAmmo: 1,
@@ -78,7 +79,8 @@ var startGame = function(){
 			right: 39,
 			fire: 38,
 			slow: 40
-		}
+		},
+		gamePadController: 0
 	}));
 
 	entities.push(new Airplane({
@@ -93,7 +95,8 @@ var startGame = function(){
 			right: 68,
 			fire: 87,
 			slow: 83
-		}
+		},
+		gamePadController: 1
 	}));
 
 	entities.push(new Airplane({
@@ -108,7 +111,8 @@ var startGame = function(){
 			right: 75,
 			fire: 85,
 			slow: 74
-		}
+		},
+		gamePadController: 2
 	}));
 
 	// Practice targets setup
@@ -125,7 +129,6 @@ var startGame = function(){
 // Game loop
 function step(timestamp) {
 	clearScreen();
-
 	// Iterate through all entities
 	for (var i = entities.length - 1; i >= 0; i--) {
 		if (!entities[i].active){

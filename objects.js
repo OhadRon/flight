@@ -210,6 +210,7 @@ function Airplane(options){
 	this.lastMissileTime = 0;
 	this.id = options.id || 0;
 	this.controls = options.controls;
+	this.gamePadController = options.gamePadController;
 	this.alive = true;
 	this.trailColors = ['#c4717a','#6c79d5', '#82c97a', '#cb992a'];
 	this.trailColor = options.trailColor || this.trailColors[this.id];
@@ -347,15 +348,15 @@ Airplane.prototype.update = function(){
 	}
 
 	if (this.alive){
-		if (keys[this.controls.left]) {
+		if (keys[this.controls.left] || gamepadAxisPressed(this.gamePadController,0,-1)) {
 			this.heading -= 4*(this.velocity/4);
 		}
 
-		if (keys[this.controls.right]) {
+		if (keys[this.controls.right] || gamepadAxisPressed(this.gamePadController,0,1)) {
 			this.heading += 4*(this.velocity/4);
 		}
 
-		if (keys[this.controls.right] || keys[this.controls.left]){
+		if (keys[this.controls.right] || keys[this.controls.left] || gamepadAxisPressed(this.gamePadController,0,-1) || gamepadAxisPressed(this.gamePadController,0,1)){
 			this.velocity -= 0.02;
 			if (this.velocity<2) this.velocity = 2;
 		} else {
@@ -363,14 +364,14 @@ Airplane.prototype.update = function(){
 			if (this.velocity>4.5) this.velocity = 4.5;
 		}
 
-		if (keys[this.controls.slow]){
+		if (keys[this.controls.slow] || gamepadAxisPressed(this.gamePadController,1,1)){
 			this.emitFlare();
 			if (this.velocity<1) this.velocity = 1;
 				else
 			this.velocity -= 0.15;
 		}
 
-		if (keys[this.controls.fire]){
+		if (keys[this.controls.fire] || gamepadButtonPressed(this.gamePadController, 1)){
 			this.fireMissile();
 		}
 	} else { // If dead
