@@ -220,6 +220,7 @@ function Airplane(options){
 	this.flareAmmo = options.flareAmmo || 10;
 	this.flares = [];
 	this.nextParticle = 0;
+	this.burnerFuel = 50;
 	this.shieldTime = options.shieldTime || 200;
 }
 
@@ -275,6 +276,7 @@ Airplane.prototype.draw = function(context){
 	this.drawScore(context);
 	this.drawAmmo(context);
 	this.drawFlares(context);
+	this.drawFuel(context);
 
 	if (this.shieldTime>0){
 		context.beginPath();
@@ -311,6 +313,14 @@ Airplane.prototype.drawFlares = function(context){
 			context.fillStyle="rgba(255,255,255,0.6)"
 			context.fillRect(20+(i*7), 10, 5,5);
 		}
+	context.restore();
+}
+
+Airplane.prototype.drawFuel = function(context){
+	context.save();
+		context.rotate(headingToRadians(-this.heading));
+		context.fillStyle="rgba(219, 155, 89, 0.6)"
+		context.fillRect(20, -10, this.burnerFuel, 5);
 	context.restore();
 }
 
@@ -360,7 +370,7 @@ Airplane.prototype.update = function(){
 			this.velocity -= 0.02;
 			if (this.velocity<2) this.velocity = 2;
 		} else {
-			this.velocity += 0.08;
+			this.velocity += 0.04;
 			if (this.velocity>4.5) this.velocity = 4.5;
 		}
 
@@ -373,6 +383,13 @@ Airplane.prototype.update = function(){
 
 		if (keys[this.controls.fire] || gamepadButtonPressed(this.gamePadController, 1)){
 			this.fireMissile();
+		}
+
+		if (keys[this.controls.afterburner] || gamepadAxisPressed(this.gamePadController,1,-1)){
+			if(this.burnerFuel>0){
+				this.burnerFuel-= 0.3;
+				this.velocity += 1;
+			}
 		}
 	} else { // If dead
 		this.velocity -= 0.1;
@@ -460,7 +477,8 @@ function AmmoCrate(options){
 	this.ammoTypes = {
 		MISSILE: 0,
 		FLARE: 1,
-		SHIELD: 2
+		SHIELD: 2,
+		FUEL: 3
 	};
 	this.ammoType = options.ammoType || this.ammoTypes.MISSILE;
 }
@@ -472,6 +490,7 @@ AmmoCrate.prototype.draw = function(context){
 	if (this.ammoType == this.ammoTypes.MISSILE)	context.fillStyle='rgba(0,0,0,0.5)';
 	if (this.ammoType == this.ammoTypes.FLARE)	context.fillStyle='rgba(255,255,255,0.5)';
 	if (this.ammoType == this.ammoTypes.SHIELD)	context.fillStyle='rgba(141, 204, 250, 0.5)';
+	if (this.ammoType == this.ammoTypes.FUEL)	context.fillStyle='rgba(223, 136, 98, 0.5)';
 	context.beginPath();
 	context.ellipse(0,0,this.size,this.size,0,0,Math.PI*2);
 	context.fill();
@@ -479,6 +498,7 @@ AmmoCrate.prototype.draw = function(context){
 	if (this.ammoType == this.ammoTypes.MISSILE)	context.fillStyle='rgba(255,255,255,0.2)';
 	if (this.ammoType == this.ammoTypes.FLARE)	context.fillStyle='rgba(0,0,0,0.2)';
 	if (this.ammoType == this.ammoTypes.SHIELD)	context.fillStyle='rgba(27, 27, 27, 0.5)';
+	if (this.ammoType == this.ammoTypes.FUEL)	context.fillStyle='rgba(207, 142, 31, 0.5)';
 
 	context.beginPath();
 	context.ellipse(0,0,2,2,0,0,Math.PI*2);
@@ -522,6 +542,7 @@ AmmoCrate.prototype.update = function(){
 				if (this.ammoType == this.ammoTypes.MISSILE)	entity.ammo +=1;
 				if (this.ammoType == this.ammoTypes.FLARE)	entity.flareAmmo +=1;
 				if (this.ammoType == this.ammoTypes.SHIELD)	entity.shieldTime +=1000;
+				if (this.ammoType == this.ammoTypes.FUEL)	entity.burnerFuel +=30;
 			}
 		}
 	}, this);

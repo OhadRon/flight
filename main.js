@@ -45,7 +45,8 @@ for (var i = 0; i < DEMO_AIRPLANES_COUNT; i++) {
 			left: 999,
 			right: 999,
 			fire: 999,
-			slow: 999
+			slow: 999,
+			afterburner: 999
 		},
 		gamePadController: null,
 		trailColor: '#ddd',
@@ -78,7 +79,8 @@ var startGame = function(){
 			left: 37,
 			right: 39,
 			fire: 38,
-			slow: 40
+			slow: 40,
+			afterburner: 38
 		},
 		gamePadController: 0
 	}));
@@ -94,7 +96,8 @@ var startGame = function(){
 			left: 65,
 			right: 68,
 			fire: 87,
-			slow: 83
+			slow: 83,
+			afterburner: 87
 		},
 		gamePadController: 1
 	}));
@@ -110,7 +113,8 @@ var startGame = function(){
 			left: 72,
 			right: 75,
 			fire: 85,
-			slow: 74
+			slow: 74,
+			afterburner: 85
 		},
 		gamePadController: 2
 	}));
@@ -146,9 +150,9 @@ function step(timestamp) {
 					x: getRandomInt(0,canvas.width),
 					y: getRandomInt(0,canvas.height)
 				},
-				ammoType: getRandomInt(0,2)
+				ammoType: getRandomInt(0,3)
 			}));
-			crateClock = 100;
+			crateClock = 80;
 		}
 
 		crateClock--;
