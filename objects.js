@@ -385,7 +385,13 @@ Airplane.prototype.update = function(){
 			this.fireMissile();
 		}
 
-		if (keys[this.controls.afterburner] || gamepadAxisPressed(this.gamePadController,1,-1)){
+		if (
+				keys[this.controls.afterburner] ||
+				gamepadAxisPressed(this.gamePadController,1,-1) &&
+				!(keys[this.controls.right] || keys[this.controls.left]
+					|| gamepadAxisPressed(this.gamePadController,0,-1) || gamepadAxisPressed(this.gamePadController,0,1))
+				)
+			{
 			if(this.burnerFuel>0){
 				this.burnerFuel-= 0.3;
 				this.velocity += 1;
