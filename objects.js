@@ -175,6 +175,7 @@ Missile.prototype.update = function(){
 					} else {
 						entity.die();
 						this.owner.score++;
+						audioEngine.killSound.play();
 					}
 					this.hit = true;
 					this.active = false;
@@ -412,6 +413,7 @@ Airplane.prototype.update = function(){
 Airplane.prototype.fireMissile = function(){
 	if (clock-this.lastMissileTime>30 && this.ammo > 0){
 		this.ammo--;
+		audioEngine.fireSound.play();
 		entities.push(new Missile({
 			position: clone(this.position),
 			heading: this.heading,
@@ -434,6 +436,7 @@ Airplane.prototype.emitFlare = function(){
 		entities.push(newFlare);
 		this.flares.push(newFlare);
 		this.lastFlareTime = clock;
+		audioEngine.flareSound.play();
 	}
 }
 
@@ -549,6 +552,7 @@ AmmoCrate.prototype.update = function(){
 				if (this.ammoType == this.ammoTypes.FLARE)	entity.flareAmmo +=1;
 				if (this.ammoType == this.ammoTypes.SHIELD)	entity.shieldTime +=1000;
 				if (this.ammoType == this.ammoTypes.FUEL)	entity.burnerFuel +=30;
+				audioEngine.crateSound.play();
 			}
 		}
 	}, this);
