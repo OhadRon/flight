@@ -119,6 +119,23 @@ var startGame = function(){
 		gamePadController: 2
 	}));
 
+	entities.push(new Airplane({
+		position: {
+			x: getRandomInt(0,canvas.width),
+			y: getRandomInt(0,canvas.height)
+		},
+		id: 3,
+		heading: getRandomInt(0,360),
+		controls: {
+			left: 72,
+			right: 75,
+			fire: 85,
+			slow: 74,
+			afterburner: 85
+		},
+		gamePadController: 3
+	}));
+
 	// Practice targets setup
 	for (var i = 0; i < 0; i++) {
 		entities.push(new PracticeTarget({

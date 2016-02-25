@@ -359,6 +359,9 @@ Airplane.prototype.update = function(){
 	}
 
 	if (this.alive){
+		if (this.burnerFuel>0){
+			this.burnerFuel -=0.02
+		}
 		if (keys[this.controls.left] || gamepadAxisPressed(this.gamePadController,0,-1)) {
 			this.heading -= 4*(this.velocity/4);
 		}
@@ -372,7 +375,11 @@ Airplane.prototype.update = function(){
 			if (this.velocity<2) this.velocity = 2;
 		} else {
 			this.velocity += 0.04;
-			if (this.velocity>4.5) this.velocity = 4.5;
+			if (this.burnerFuel>0){
+				if (this.velocity>4.5) this.velocity = 4.5;
+			} else {
+				if (this.velocity>2.2) this.velocity = 2.2;
+			}
 		}
 
 		if (keys[this.controls.slow] || gamepadAxisPressed(this.gamePadController,1,1)){
@@ -573,11 +580,11 @@ StartMenu.prototype.draw = function(context){
 	context.textAlign = 'center';
 	context.fillText("Triangles Shooting Missiles", canvas.width/2, canvas.height/2-100);
 	context.font = '34px sans-serif';
-	context.fillText("Shoot missiles and emit flares to avoid them", canvas.width/2, canvas.height/2-30);
+	context.fillText("", canvas.width/2, canvas.height/2-30);
 	context.font = '24px sans-serif';
-	context.fillText("Player 1: Arrows | Player 2: AWSD | Player 3: HUJK", canvas.width/2, canvas.height/2+50);
+	context.fillText("", canvas.width/2, canvas.height/2+50);
 	context.font = '17px sans-serif';
-	context.fillText("Press the spacebar to start", canvas.width/2, canvas.height/2+100);
+	context.fillText("Press spacebar to start", canvas.width/2, canvas.height/2+100);
 };
 
 StartMenu.prototype.update = function(){
