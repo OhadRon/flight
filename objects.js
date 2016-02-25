@@ -174,7 +174,7 @@ Missile.prototype.update = function(){
 						entity.shieldTime = 0;
 					} else {
 						entity.die();
-						this.owner.score++;
+						this.owner.increaseScore();
 						audioEngine.killSound.play();
 					}
 					this.hit = true;
@@ -223,6 +223,7 @@ function Airplane(options){
 	this.nextParticle = 0;
 	this.burnerFuel = 50;
 	this.shieldTime = options.shieldTime || 200;
+	this.timeSinceScore = 200;
 }
 
 Airplane.prototype = Object.create(GameEntity.prototype);
@@ -289,9 +290,19 @@ Airplane.prototype.draw = function(context){
 	}
 }
 
+Airplane.prototype.increaseScore = function(){
+	this.score++;
+	this.timeSinceScore = 0;
+}
+
 Airplane.prototype.drawScore = function(context){
 	var scoreText = '' + this.score;
 	context.save();
+		if(this.timeSinceScore<200){
+			context.font = '30px sans-serif';
+		} else {
+			context.font = '10px sans-serif';
+		}
 		context.rotate(headingToRadians(-this.heading));
 		context.fillText(scoreText, 20, 30);
 	context.restore();
@@ -332,6 +343,8 @@ Airplane.prototype.update = function(){
 	if (this.shieldTime>0){
 		this.shieldTime--;
 	}
+
+	this.timeSinceScore++;
 
 	// Clear dead flares
 
