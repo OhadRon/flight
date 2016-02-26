@@ -520,7 +520,12 @@ function AmmoCrate(options){
 		SHIELD: 2,
 		FUEL: 3
 	};
-	this.ammoType = options.ammoType || this.ammoTypes.MISSILE;
+
+	var randomNum = getRandomInt(0,100);
+	if (randomNum>0 && randomNum<=10){ this.ammoType = this.ammoTypes.FLARE; }
+	else if (randomNum>10 && randomNum<=20){ this.ammoType = this.ammoTypes.SHIELD; }
+	else if (randomNum>20 && randomNum<=50){ this.ammoType = this.ammoTypes.FUEL; }
+	else { this.ammoType = this.ammoTypes.MISSILE; }
 }
 
 AmmoCrate.prototype = Object.create(GameEntity.prototype);

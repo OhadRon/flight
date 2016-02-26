@@ -119,7 +119,7 @@ var startGame = function(){
 		},
 		gamePadController: 2
 	}));
-	// 
+	//
 	// entities.push(new Airplane({
 	// 	position: {
 	// 		x: getRandomInt(0,canvas.width),
@@ -168,8 +168,7 @@ function step(timestamp) {
 					position:{
 						x: getRandomInt(0,canvas.width),
 						y: getRandomInt(0,canvas.height)
-					},
-					ammoType: getRandomInt(0,3)
+					}
 				}));
 				crateClock = 30;
 			}
