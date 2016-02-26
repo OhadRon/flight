@@ -267,8 +267,7 @@ Airplane.prototype.draw = function(context){
 	context.translate(-45,-45);
 	context.rotate(headingToRadians(this.heading));
 
-	// context.fillStyle="#fff";
-	context.fillStyle = this.trailColor;
+	context.fillStyle="#fff";
 	context.beginPath();
 	context.moveTo(0,0);
 	context.lineTo(10,0);
@@ -276,6 +275,17 @@ Airplane.prototype.draw = function(context){
 	context.lineTo(-10,0);
 	context.lineTo(0,0);
 	context.fill();
+
+	context.fillStyle = this.trailColor;
+	context.beginPath();
+	context.moveTo(0,0);
+	context.lineTo(10,0);
+	context.lineTo(10,8);
+	context.lineTo(-10,8);
+	context.lineTo(-10,0);
+	context.lineTo(0,0);
+	context.fill();
+
 	this.drawScore(context);
 	this.drawAmmo(context);
 	this.drawFlares(context);
