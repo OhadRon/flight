@@ -18,6 +18,7 @@ false);
 
 var entities = [];
 var clock = 0;
+var gamePaused = false;
 var crateClock;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -118,23 +119,23 @@ var startGame = function(){
 		},
 		gamePadController: 2
 	}));
-
-	entities.push(new Airplane({
-		position: {
-			x: getRandomInt(0,canvas.width),
-			y: getRandomInt(0,canvas.height)
-		},
-		id: 3,
-		heading: getRandomInt(0,360),
-		controls: {
-			left: 72,
-			right: 75,
-			fire: 85,
-			slow: 74,
-			afterburner: 85
-		},
-		gamePadController: 3
-	}));
+	// 
+	// entities.push(new Airplane({
+	// 	position: {
+	// 		x: getRandomInt(0,canvas.width),
+	// 		y: getRandomInt(0,canvas.height)
+	// 	},
+	// 	id: 3,
+	// 	heading: getRandomInt(0,360),
+	// 	controls: {
+	// 		left: 72,
+	// 		right: 75,
+	// 		fire: 85,
+	// 		slow: 74,
+	// 		afterburner: 85
+	// 	},
+	// 	gamePadController: 3
+	// }));
 
 	// Practice targets setup
 	for (var i = 0; i < 0; i++) {
@@ -149,37 +150,41 @@ var startGame = function(){
 
 // Game loop
 function step(timestamp) {
-	clearScreen();
-	// Iterate through all entities
-	for (var i = entities.length - 1; i >= 0; i--) {
-		if (!entities[i].active){
-			entities.splice(i,1);
+	if (!gamePaused){
+		clearScreen();
+		// Iterate through all entities
+		for (var i = entities.length - 1; i >= 0; i--) {
+			if (!entities[i].active){
+				entities.splice(i,1);
+			} else {
+				entities[i].update();
+				entities[i].display(ctx);
+			}
+		};
+
+		if (gameStarted){
+			if (crateClock==0){
+				entities.push(new AmmoCrate({
+					position:{
+						x: getRandomInt(0,canvas.width),
+						y: getRandomInt(0,canvas.height)
+					},
+					ammoType: getRandomInt(0,3)
+				}));
+				crateClock = 30;
+			}
+			crateClock--;
 		} else {
-			entities[i].update();
-			entities[i].display(ctx);
+			if (keys[32] || gamepadButtonPressed(0, 9)|| gamepadButtonPressed(1, 9)|| gamepadButtonPressed(2, 9)|| gamepadButtonPressed(3, 9)){
+				startGame();
+			}
 		}
-	};
-
-	if (gameStarted){
-		if (crateClock==0){
-			entities.push(new AmmoCrate({
-				position:{
-					x: getRandomInt(0,canvas.width),
-					y: getRandomInt(0,canvas.height)
-				},
-				ammoType: getRandomInt(0,3)
-			}));
-			crateClock = 80;
-		}
-
-		crateClock--;
-	} else {
-		if (keys[32]){
-			startGame();
-		}
+		clock++;
 	}
 
-	clock++;
+	if (keys[80] || gamepadButtonPressed(0,8)|| gamepadButtonPressed(1,8)|| gamepadButtonPressed(2,8)|| gamepadButtonPressed(3,8)){
+		if (gamePaused) { gamePaused=false} else {gamePaused=true}
+	}
 	requestAnimationFrame(step);
 }
 

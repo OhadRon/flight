@@ -216,7 +216,7 @@ function Airplane(options){
 	this.trailColors = ['#c4717a','#6c79d5', '#82c97a', '#cb992a'];
 	this.trailColor = options.trailColor || this.trailColors[this.id];
 	this.score = 0;
-	this.ammo = options.ammo || 4;
+	this.ammo = options.ammo || 7;
 	this.lastFlareTime = 0;
 	this.flareAmmo = options.flareAmmo || 10;
 	this.flares = [];
@@ -267,7 +267,8 @@ Airplane.prototype.draw = function(context){
 	context.translate(-45,-45);
 	context.rotate(headingToRadians(this.heading));
 
-	context.fillStyle="#fff";
+	// context.fillStyle="#fff";
+	context.fillStyle = this.trailColor;
 	context.beginPath();
 	context.moveTo(0,0);
 	context.lineTo(10,0);
@@ -566,9 +567,9 @@ AmmoCrate.prototype.update = function(){
 
 	entities.forEach(function(entity){
 		if (entity instanceof Airplane){
-			if (distance(this, entity)<20) {
+			if (distance(this, entity)<30) {
 				this.active = false;
-				if (this.ammoType == this.ammoTypes.MISSILE)	entity.ammo +=1;
+				if (this.ammoType == this.ammoTypes.MISSILE)	entity.ammo +=3;
 				if (this.ammoType == this.ammoTypes.FLARE)	entity.flareAmmo +=1;
 				if (this.ammoType == this.ammoTypes.SHIELD)	entity.shieldTime +=1000;
 				if (this.ammoType == this.ammoTypes.FUEL)	entity.burnerFuel +=30;
